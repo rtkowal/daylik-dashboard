@@ -1,1 +1,373 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daylik Show — Decision Dashboard</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; color: #202124; line-height: 1.6; }
 
+  .header { padding: 32px 0 24px; border-bottom: 1px solid #e0e0e0; max-width: 800px; margin: 0 auto; }
+  .header h1 { font-size: 22px; font-weight: 400; color: #202124; }
+  .header .date { font-size: 14px; color: #5f6368; margin-top: 4px; }
+  .header .pipeline { font-size: 12px; color: #1a73e8; margin-top: 8px; letter-spacing: 0.3px; }
+
+  .container { max-width: 800px; margin: 0 auto; padding: 0 0 120px; }
+
+  .section-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #5f6368; margin: 28px 0 12px; padding: 12px 0 8px; border-bottom: 1px solid #e0e0e0; }
+
+  .topic-card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px 24px; margin-bottom: 12px; transition: all 0.15s; background: #fff; }
+  .topic-card:hover { box-shadow: 0 1px 6px rgba(32,33,36,0.1); }
+  .topic-card.selected-yes { border-color: #34a853; background: #f6fef7; }
+  .topic-card.selected-no { border-color: #dadce0; background: #f8f9fa; opacity: 0.55; }
+  .topic-card.selected-opener { border-color: #ea4335; border-width: 2px; background: #fef7f6; }
+
+  .topic-title { font-size: 16px; font-weight: 500; color: #202124; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .topic-summary { font-size: 14px; color: #5f6368; margin-bottom: 4px; }
+  .topic-hook { font-size: 13px; color: #b06000; margin-bottom: 14px; padding: 8px 12px; background: #fef7e0; border-radius: 6px; border-left: 3px solid #f9ab00; }
+
+  .narratives { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; font-size: 13px; }
+  .narrative { padding: 8px 10px; border-radius: 6px; background: #f8f9fa; border-left: 3px solid #dadce0; }
+  .narrative .label { font-weight: 500; margin-bottom: 1px; font-size: 12px; }
+  .narrative.prawica { border-left-color: #ea4335; }
+  .narrative.prawica .label { color: #c5221f; }
+  .narrative.lewica { border-left-color: #e37400; }
+  .narrative.lewica .label { color: #b06000; }
+  .narrative.libki { border-left-color: #1a73e8; }
+  .narrative.libki .label { color: #1a73e8; }
+  .narrative.luka { border-left-color: #34a853; }
+  .narrative.luka .label { color: #0d652d; }
+  .narrative .text { color: #5f6368; }
+
+  .decision-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 4px; }
+  .decision-btn { padding: 6px 16px; border-radius: 16px; border: 1px solid #dadce0; background: #fff; color: #5f6368; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.1s; }
+  .decision-btn:hover { background: #f1f3f4; border-color: #bdc1c6; }
+  .decision-btn.active-yes { border-color: #34a853; background: #e6f4ea; color: #0d652d; }
+  .decision-btn.active-no { border-color: #ea4335; background: #fce8e6; color: #c5221f; }
+  .decision-btn.active-opener { border-color: #ea4335; background: #ea4335; color: #fff; }
+
+  .notes-area { margin-top: 10px; }
+  .notes-area textarea { width: 100%; min-height: 48px; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 6px; padding: 8px 12px; color: #202124; font-size: 13px; font-family: inherit; resize: vertical; }
+  .notes-area textarea::placeholder { color: #9aa0a6; }
+  .notes-area textarea:focus { outline: none; border-color: #1a73e8; background: #fff; box-shadow: 0 0 0 2px #1a73e820; }
+
+  .general-notes { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px 24px; margin: 28px 0; }
+  .general-notes h3 { font-size: 14px; font-weight: 500; color: #202124; margin-bottom: 8px; }
+  .general-notes textarea { width: 100%; min-height: 100px; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px; color: #202124; font-size: 14px; font-family: inherit; resize: vertical; }
+  .general-notes textarea:focus { outline: none; border-color: #1a73e8; background: #fff; box-shadow: 0 0 0 2px #1a73e820; }
+  .general-notes .hint { font-size: 12px; color: #9aa0a6; margin-top: 6px; }
+
+  .submit-section { text-align: center; padding: 24px 0; }
+  .submit-btn { padding: 10px 32px; background: #1a73e8; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .submit-btn:hover { background: #1557b0; box-shadow: 0 1px 4px rgba(26,115,232,0.3); }
+
+  .status-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e0e0e0; padding: 10px 0; display: flex; justify-content: center; gap: 24px; align-items: center; font-size: 13px; z-index: 100; }
+  .status-bar .count { color: #0d652d; font-weight: 500; }
+  .status-bar .hint { color: #9aa0a6; }
+
+  .success-banner { display: none; position: fixed; top: 0; left: 0; right: 0; background: #e6f4ea; border-bottom: 1px solid #34a853; padding: 14px 0; text-align: center; font-size: 14px; color: #0d652d; font-weight: 500; z-index: 200; }
+
+  body { padding-bottom: 50px; }
+</style>
+</head>
+<body>
+
+<div class="success-banner" id="successBanner">
+  Decyzje zapisane do workspace folderu. Agent je automatycznie odczyta.
+</div>
+
+<div class="header">
+  <h1>Daylik Show — Decision Dashboard</h1>
+  <div class="date" id="briefDate">Tydzień 3-9 kwietnia 2026</div>
+  <div class="pipeline">Phase 1 Research → Twoja decyzja → Phase 2 Briefs + Beats</div>
+</div>
+
+<div class="container" id="app"></div>
+
+<div class="status-bar">
+  <div class="count" id="statusCount">0 tematów wybranych</div>
+  <div class="hint">Kliknij decyzję przy każdym temacie</div>
+</div>
+
+<script>
+// === DATA — Research Agent generates this JSON ===
+const briefData = {
+  date: "Tydzień 3-9 kwietnia 2026",
+  popularne_trendy: [
+    {
+      id: "pt-1",
+      title: "Tusk vs Nawrocki — kohabitacja piekielna",
+      summary: "Prezydent Nawrocki zawetował pożyczkę obronną UE 43,7 mld euro. Tusk mówi o sabocie bezpieczeństwa. A Polska w tym czasie nie potrafi uchwalić budżetu obronnego.",
+      hook: "Polska ma prezydenta z opozycji i premiera z koalicji. Efekt? System rozpadający się na oczach. Konflikt Nawrocki-Tusk to nie polityka — to paraliż decyzyjny.",
+      narratives: {
+        prawica: "Nawrocki słusznie broni suwerenności Polski przed kolejnym zadłużeniem Brukseli",
+        lewica: "Nawrocki sabotuje bezpieczeństwo Polski dla gier politycznych PiS-u",
+        libki: "Problem to paraliż decyzyjny — Polska nie ma procedury rozwiązywania konfliktów prezydent-premier",
+        luka: "Nikt nie mówi, że polska kohabitacja nie ma żadnych mechanizmów mediacji. 63% Polaków ocenia relację Nawrocki-Tusk jako złą. Kto płaci za ten konflikt? Obywatele."
+      }
+    },
+    {
+      id: "pt-2",
+      title: "RPP kończy obniżki stóp — koniec marzeń o tańszych kredytach",
+      summary: "Rada Polityki Pieniężnej utrzymuje stopy na 3,75%. Ostatnia obniżka. Dla młodych Polaków kredyty hipoteczne pozostają niedostępne.",
+      hook: "Średnia cena mieszkania w Warszawie: 18 662 zł/m². Rata kredytu pochłania 50%+ pensji 30-latka. Pokolenie 25-35 zostało systemowo wykluczone z rynku nieruchomości.",
+      narratives: {
+        prawica: "Wysokie stopy to efekt polityki wydatkowej rządu Tuska — rozrzuca publiczne pieniądze",
+        lewica: "Wysokie stopy uderzają w najbiedniejszych — rząd powinien szukać innych narzędzi wsparcia",
+        libki: "Marcowa obniżka była ostatnią — member RPP Ludwik Kotecki powiedział to wprost. Rynek musi się dostosować.",
+        luka: "Nikt nie łączy dwóch faktów: stopy 3,75% + ceny mieszkań rosną 5% r/r = pokolenie 30-latków ma niemożliwy wybór. Polska jest jednym z najgorszych rynków mieszkaniowych w UE dla młodych."
+      }
+    }
+  ],
+  discovery: [
+    {
+      id: "disc-1",
+      title: "90% kasy z KPO poszło na płynność — a miało iść na inwestycje",
+      summary: "Prezes NIK Mariusz Haładyj ujawnił: około 90% z 58,1 mld euro z Krajowego Planu Odbudowy trafiło na zarządzanie płynnością budżetu, nie na realne inwestycje. Polska walczyła z Brukselą, media świętowały 'sukces' — potem 90% hajsu poszło na obsługę bieżących wydatków.",
+      hook: "Wielki plan na papierze, pustka w realu. Rząd nie wie dokładnie, ile pieniędzy z KPO faktycznie wydano na inwestycje. Ani Minister Funduszy, ani Minister Finansów nie mają pełnych i wiarygodnych danych.",
+      narratives: {
+        prawica: "Kompromitacja rządu Tuska — obiecywali miliardy na inwestycje, a KPO posłużyło do łatania dziury budżetowej",
+        lewica: "Problem jest strukturalny — opóźnienia wdrożeniowe to dziedzictwo blokady za rządów PiS",
+        libki: "Środki z KPO powinny napędzać gospodarkę, a zamiast tego służą obsłudze długu — marnotrawstwo",
+        luka: "Nikt nie pyta: ile z tych 58 mld euro FAKTYCZNIE zmieniło życie przeciętnego Polaka? Gdzie są szkoły, szpitale, drogi? Żadna redakcja nie zrobiła mapy 'co KPO dało twojemu miastu'."
+      }
+    },
+    {
+      id: "disc-2",
+      title: "5000 zł kary za skarpetkę w złym koszu — absurd segregacji tekstyliów",
+      summary: "Od 2025: za wrzucenie skarpetki do zwykłego kosza grozi mandat do 500 zł (sąd: do 5000 zł) i podwyższona opłata za śmieci do +400%. Problem: gminy nie mają obowiązku odbierania tekstyliów. Efekt: kontenery PCK przepełnione, ubrania w lasach, ludzie palą je w piecach.",
+      hook: "Państwo każe ci segregować tekstylia, ale nie zapewnia infrastruktury do ich oddania. W Białystoku w 2025 wydano 421 decyzji o karach — o 680% więcej niż dwa lata wcześniej.",
+      narratives: {
+        prawica: "UE narzuca absurdalne przepisy, a polski rząd bezkrytycznie je wdraża bez przygotowania infrastruktury",
+        lewica: "Segregacja jest ważna, ale rząd musi zapewnić realne warunki — nie można karać ludzi za brak systemu",
+        libki: "Problem polega na braku infrastruktury odpadowej, a nie na samej idei segregacji",
+        luka: "Polska produkuje ~500 tys. ton odpadów tekstylnych rocznie — a recyklinguje mniej niż 10%. Kary to teatr, bo systemu recyklingu po prostu nie ma."
+      }
+    },
+    {
+      id: "disc-3",
+      title: "Połowa opinii w sklepach to ściema — UOKiK wyciąga bat na fake reviews",
+      summary: "Od marca 2026 UOKiK egzekwuje 'czarną listę' praktyk rynkowych. Kary: do 10% rocznego obrotu firmy, do 2 mln zł na prezesa. UOKiK nie musi udowadniać, że konkretny konsument został oszukany — wystarczy brak procedury weryfikacji opinii. Każdy Polak kupujący w internecie sprawdza opinie. A połowa może być fałszywa.",
+      hook: "Algorytmy AI zaczynają blokować nieuczciwe sklepy. Ale pytanie brzmi: skoro UOKiK o tym wie od lat, to dlaczego dopiero teraz? W 2025 nałożono miliard zł kar — ale ile faktycznie ściągnięto? Od 2021 roku: 3,6 mld zł kar 'na papierze' — a wpłacono ułamek.",
+      narratives: {
+        prawica: "Regulacja to dobry kierunek, ale UOKiK nie powinien zastępować rynku — niech konsument decyduje",
+        lewica: "Ochrona konsumenta to priorytet — wreszcie państwo bierze stronę kupującego",
+        libki: "Kary są potrzebne, ale egzekucja kuleje — państwo nakłada miliardowe kary, których nie potrafi ściągnąć",
+        luka: "Nikt nie pyta o Amazon, Allegro, Temu — wielcy gracze mają setki tysięcy opinii i AI do filtrowania. Małe sklepy dostaną kary, a platformy dalej będą jeździć na fałszywych gwiazdkach."
+      }
+    },
+    {
+      id: "disc-4",
+      title: "Współczynnik dzietności 1,10 — Polska wymiera szybciej niż prognozy",
+      summary: "W 2025 urodziło się 238 tys. dzieci — o 40% mniej niż w 2017. Współczynnik dzietności: 1,10 (trzeba 2,1 dla stabilności). Prognozy 2026: 210 tys. urodzeń — historyczne minimum. Do 2050 populacja w wieku produkcyjnym spadnie o 20%. Żaden polityk nie traktuje tego poważnie. 500+ nie zadziałało — urodzeń jest MNIEJ niż przed programem.",
+      hook: "Polska wymiera — dosłownie — a żaden polityk nie ma planu. To największa tykająca bomba pod polską gospodarkę, emerytury i system zdrowia. Rząd nawet nie bada wpływu nowych ustaw na demografię — jak ustalił 'Rzeczpospolita'.",
+      narratives: {
+        prawica: "Kryzys demograficzny to efekt liberalizacji obyczajowej i braku wsparcia tradycyjnej rodziny",
+        lewica: "Kobiety nie rodzą, bo nie mają warunków — brak żłobków, niestabilne zatrudnienie, luka płacowa",
+        libki: "Problem jest ekonomiczny — mieszkania za drogie, praca niepewna, wsparcie nieefektywne",
+        luka: "Polska wydaje ~4% PKB na politykę prorodzinną (sporo!), ale pieniądze nie trafiają w potrzeby — bo nikt nie zbadał, czego FAKTYCZNIE potrzebują młodzi ludzie. Robią politykę demograficzną bez badań demograficznych."
+      }
+    },
+    {
+      id: "disc-5",
+      title: "Gazety samorządowe zabijają lokalną prasę — UMK chciała zakazu i się wycofała",
+      summary: "Samorządy wydają setki gazet i portali finansowanych z publicznych pieniędzy — oficjalnie 'informacyjne', faktycznie propagandowe. 66% lokalnych dziennikarzy spotyka się z naciskami ze strony władz. Ministerstwo Kultury obiecało zakaz — ale przepis 'zniknął' z projektu. W Krakowie Miszalski zwiększa nakład gazety tuż przed referendum o odwołanie.",
+      hook: "Historia o wolności prasy na poziomie lokalnym — tam gdzie nikt nie patrzy. Samorządy wydają gazety za publiczne pieniądze, w których nigdy nie pojawi się krytyka władzy. A gdy rząd miał to ukrócić — przepis 'magicznie znikał' z ustawy.",
+      narratives: {
+        prawica: "Zakaz mediów samorządowych to atak na prawo lokalnych społeczności do informacji",
+        lewica: "Media samorządowe to propaganda — trzeba wspierać niezależne media lokalne",
+        libki: "Rynek powinien decydować — jeśli ludzie chcą niezależnej prasy, zapłacą za nią",
+        luka: "Nikt nie mówi, że w większości małych gmin gazeta samorządowa to JEDYNE medium. Nie chodzi o zakaz — chodzi o to, kto kontroluje informację na poziomie lokalnym."
+      }
+    },
+    {
+      id: "disc-6",
+      title: "KSeF od 1 kwietnia — miliony firm wchodzą w system, który nie działa",
+      summary: "Od 1 kwietnia Krajowy System e-Faktur objął obowiązkiem miliony mikro, małych i średnich firm. Pierwsza faza (duże firmy): 45% managerów ocenia negatywnie, systemy logowania padały, firmy czekały na numery faktur. RPO uznał KSeF za 'narzędzie totalnej inwigilacji'. Ministerstwo Finansów: okres łaski — w 2026 bez kar za błędy. Ale firmy musiały już dostosować systemy (tysiące złotych).",
+      hook: "KSeF to historia o tym, jak państwo wymyśliło system kontroli — ale nie potrafiło go uruchomić bez chaosu. 'Miał być przełom, jest frustracja.' Rząd sam przyznaje, że system nie jest gotowy — dlatego nie kary za rok.",
+      narratives: {
+        prawica: "KSeF to narzędzie kontroli — rząd chce śledzić każdą transakcję kosztem wolności przedsiębiorców",
+        lewica: "Cyfryzacja jest potrzebna, ale wdrożenie jest fatalnie przygotowane — cierpią pracownicy i małe firmy",
+        libki: "Idea jest dobra, ale wykonanie katastrofalne — typowe polskie IT w urzędach",
+        luka: "Nikt nie pyta, ile KSeF kosztuje przedsiębiorców. Każda firma musiała kupić/dostosować oprogramowanie, przeszkolić ludzi, zmienić procesy. Te koszty to miliardy — i nikt ich nie pokrywa."
+      }
+    },
+    {
+      id: "disc-7",
+      title: "Kraków referendum — pierwsze duże miasto chce odwołać prezydenta",
+      summary: "24 maja 2026 Kraków głosuje nad odwołaniem prezydenta Aleksandra Miszalskiego i Rady Miasta. Pierwszy recall w mieście wojewódzkim w Polsce. Miszalski wygrał w 2024 minimalnie (5434 głosy). Aby referendum było ważne, do urn musi przyjść 158 555 osób. Inicjatorem: Rafał Zontek.",
+      hook: "Kraków to drugie miasto Polski — i przechodzi przez coś, co nigdy wcześniej się nie wydarzyło. Precedens: czy demokracja lokalna w Polsce zacznie działać jak recall elections w USA? Ale próg frekwencji jest ustawiony tak wysoko, że organizatorzy muszą zmobilizować więcej ludzi niż Miszalski w wyborach dostał.",
+      narratives: {
+        prawica: "Porażka koalicji rządzącej na poziomie lokalnym — Kraków mówi 'dość'",
+        lewica: "Referendum to narzędzie demokratyczne — jeśli ludzie chcą zmiany, mają do tego prawo",
+        libki: "Referendum odwoławcze powinno być normalnym mechanizmem w polskiej demokracji",
+        luka: "Nikt nie mówi, że progi frekwencyjne w polskich referendach są ustawione tak, że prawie NIGDY nie są wiążące. To fikcja demokracji bezpośredniej — system zaprojektowany, żeby referenda nie działały."
+      }
+    }
+  ],
+  bonusy: [
+    {
+      id: "bonus-1",
+      title: "Polska nie jedzie na Mundial 2026 — memy eksplodują",
+      summary: "Polska przegrała baraż ze Szwecją 2:3. Internet: #MundialBezPolski, nawiązania do klątwy ('ostatnie zwycięstwo ze Szwecją na wyjeździe: 1930'). Tematy: 'Polska szwedzki', porównania do 'wiecznego pechowca'."
+    },
+    {
+      id: "bonus-2",
+      title: "KSeF od 1 kwietnia — 'to nie Prima Aprilis'",
+      summary: "W dniu wejścia KSeF (1 kwietnia), polscy przedsiębiorcy na X i Wykopie wrzucali memy o 'najlepszym primaaprilisowym żarcie rządu'. Hashtag #KSeF trendował. Frustacja + humor = viralowy materiał."
+    },
+    {
+      id: "bonus-3",
+      title: "Memy o teściowych podbijają internet — nowa fala humoru",
+      summary: "Nie stare żarty — nowa fala: 'babcia mówi że za jej czasów nie było depresji, bo nikt nie miał czasu na smutki'. Setki tysięcy udostępnień na TikToku i Facebooku. Subtelne obserwacje o różnicach między pokoleniami."
+    }
+  ]
+};
+
+// === STATE ===
+const decisions = {};
+
+function render() {
+  const app = document.getElementById('app');
+  let html = '';
+
+  html += '<div class="section-label">POPULARNE TRENDY — co wszyscy wiedzą, ale nikt nie widzi kąta</div>';
+  briefData.popularne_trendy.forEach(t => { html += renderCard(t, 'popularne'); });
+
+  html += '<div class="section-label">DISCOVERY — tematy pod radarem</div>';
+  briefData.discovery.forEach(t => { html += renderCard(t, 'discovery'); });
+
+  html += '<div class="section-label">BONUSY — memy i virale</div>';
+  briefData.bonusy.forEach(t => { html += renderCard(t, 'bonus', true); });
+
+  html += `
+  <div class="general-notes">
+    <h3>Ogólne uwagi, dodatkowe tematy, linki</h3>
+    <textarea id="generalNotes" placeholder="Wklej linki, dokumenty, dodatkowe pomysły, uwagi..."></textarea>
+    <div class="hint">To pole trafia do agenta jako kontekst do Phase 2.</div>
+  </div>`;
+
+  html += `
+  <div class="submit-section">
+    <button class="submit-btn" onclick="submitDecisions()">Wyślij do agenta</button>
+  </div>`;
+
+  app.innerHTML = html;
+  restoreState();
+  updateStatus();
+}
+
+function renderCard(topic, type, isBonus) {
+  const d = decisions[topic.id] || {};
+  const stateClass = d.decision === 'opener' ? 'selected-opener' : d.decision === 'yes' ? 'selected-yes' : d.decision === 'no' ? 'selected-no' : '';
+  const tagLabel = type === 'popularne' ? 'POPULARNE' : type === 'discovery' ? 'DISCOVERY' : 'BONUS';
+
+  let html = `<div class="topic-card ${stateClass}" id="card-${topic.id}">`;
+  html += `<div class="topic-title">${topic.title}</div>`;
+  html += `<div class="topic-summary">${topic.summary}</div>`;
+  if (topic.hook) html += `<div class="topic-hook">${topic.hook}</div>`;
+
+  if (topic.narratives) {
+    html += '<div class="narratives">';
+    html += `<div class="narrative prawica"><div class="label">Prawica</div><div class="text">${topic.narratives.prawica}</div></div>`;
+    html += `<div class="narrative lewica"><div class="label">Lewica</div><div class="text">${topic.narratives.lewica}</div></div>`;
+    html += `<div class="narrative libki"><div class="label">Libki</div><div class="text">${topic.narratives.libki}</div></div>`;
+    html += `<div class="narrative luka"><div class="label">Luka narracyjna</div><div class="text">${topic.narratives.luka}</div></div>`;
+    html += '</div>';
+  }
+
+  html += '<div class="decision-row">';
+  if (!isBonus) {
+    html += `<button class="decision-btn ${d.decision==='opener'?'active-opener':''}" onclick="setDecision('${topic.id}','opener')">⭐ OPENER</button>`;
+  }
+  html += `<button class="decision-btn ${d.decision==='yes'?'active-yes':''}" onclick="setDecision('${topic.id}','yes')">✅ Bierzemy</button>`;
+  html += `<button class="decision-btn ${d.decision==='no'?'active-no':''}" onclick="setDecision('${topic.id}','no')">❌ Nie</button>`;
+  html += '</div>';
+
+  html += `
+  <div class="notes-area">
+    <textarea id="notes-${topic.id}" placeholder="Uwagi, angle, pomysł..." oninput="saveNote('${topic.id}', this.value)">${d.notes || ''}</textarea>
+  </div>`;
+
+  html += '</div>';
+  return html;
+}
+
+function setDecision(id, decision) {
+  if (!decisions[id]) decisions[id] = {};
+  decisions[id].decision = decisions[id].decision === decision ? null : decision;
+  render();
+}
+
+function saveNote(id, value) {
+  if (!decisions[id]) decisions[id] = {};
+  decisions[id].notes = value;
+}
+
+function restoreState() {
+  Object.keys(decisions).forEach(tid => {
+    const el = document.getElementById('notes-' + tid);
+    if (el && decisions[tid].notes) el.value = decisions[tid].notes;
+  });
+  const gen = document.getElementById('generalNotes');
+  if (gen && window._generalNotes) gen.value = window._generalNotes;
+}
+
+function updateStatus() {
+  const selected = Object.values(decisions).filter(d => d.decision === 'yes' || d.decision === 'opener').length;
+  const opener = Object.values(decisions).filter(d => d.decision === 'opener').length;
+  document.getElementById('statusCount').textContent = `${selected} tematów wybranych` + (opener ? ` (${opener} opener)` : '');
+}
+
+function submitDecisions() {
+  window._generalNotes = document.getElementById('generalNotes')?.value || '';
+
+  const output = {
+    date: briefData.date,
+    submitted_at: new Date().toISOString(),
+    topics: [],
+    general_notes: window._generalNotes,
+    opener: null,
+    selected: [],
+    rejected: []
+  };
+
+  const allTopics = [...briefData.popularne_trendy, ...briefData.discovery, ...briefData.bonusy];
+  allTopics.forEach(t => {
+    const d = decisions[t.id] || {};
+    const entry = {
+      id: t.id,
+      title: t.title,
+      decision: d.decision || 'undecided',
+      notes: d.notes || ''
+    };
+    output.topics.push(entry);
+    if (d.decision === 'opener') { output.opener = t.id; output.selected.push(t.id); }
+    else if (d.decision === 'yes') { output.selected.push(t.id); }
+    else if (d.decision === 'no') { output.rejected.push(t.id); }
+  });
+
+  // Download as file for Cowork ingestion
+  const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'daylik_decisions.json';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  // Show confirmation
+  const banner = document.getElementById('successBanner');
+  banner.style.display = 'block';
+  setTimeout(() => { banner.style.display = 'none'; }, 4000);
+}
+
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'generalNotes') window._generalNotes = e.target.value;
+});
+
+render();
+</script>
+</body>
+</html>
