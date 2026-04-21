@@ -6,7 +6,21 @@
 <title>Daylik Show — Decision Dashboard</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; color: #202124; line-height: 1.6; }
+  body { font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; color: #202124; line-height: 1.6; display: flex; }
+
+  /* ── Sidebar ── */
+  .sidebar { width: 220px; min-height: 100vh; background: #f8f9fa; border-right: 1px solid #e0e0e0; padding: 16px 0; position: fixed; top: 0; left: 0; overflow-y: auto; z-index: 50; }
+  .sidebar-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #5f6368; padding: 8px 16px 12px; border-bottom: 1px solid #e0e0e0; margin-bottom: 8px; }
+  .sidebar-item { display: block; padding: 10px 16px; font-size: 13px; color: #5f6368; cursor: pointer; border-left: 3px solid transparent; transition: all 0.1s; text-decoration: none; }
+  .sidebar-item:hover { background: #e8eaed; color: #202124; }
+  .sidebar-item.active { border-left-color: #1a73e8; background: #e8f0fe; color: #1a73e8; font-weight: 500; }
+  .sidebar-item .item-date { font-size: 12px; font-weight: 500; }
+  .sidebar-item .item-count { font-size: 11px; color: #9aa0a6; margin-top: 2px; }
+  .sidebar-item.active .item-count { color: #1a73e8; }
+  .sidebar-logo { padding: 12px 16px 16px; font-size: 15px; font-weight: 500; color: #ea4335; border-bottom: 1px solid #e0e0e0; margin-bottom: 4px; }
+
+  /* ── Main content ── */
+  .main { margin-left: 220px; flex: 1; padding-bottom: 60px; }
 
   .header { padding: 32px 0 24px; border-bottom: 1px solid #e0e0e0; max-width: 800px; margin: 0 auto; }
   .header h1 { font-size: 22px; font-weight: 400; color: #202124; }
@@ -28,8 +42,10 @@
   .topic-hook { font-size: 13px; color: #b06000; margin-bottom: 14px; padding: 8px 12px; background: #fef7e0; border-radius: 6px; border-left: 3px solid #f9ab00; }
 
   .narratives { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; font-size: 13px; }
-  .narrative { padding: 8px 10px; border-radius: 6px; background: #f8f9fa; border-left: 3px solid #dadce0; }
-  .narrative .label { font-weight: 500; margin-bottom: 1px; font-size: 12px; }
+  .narrative { padding: 8px 10px; border-radius: 6px; background: #f8f9fa; border-left: 3px solid #dadce0; position: relative; }
+  .narrative .label { font-weight: 500; margin-bottom: 1px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+  .narrative .label a { font-size: 11px; color: #1a73e8; text-decoration: none; font-weight: 400; opacity: 0.7; }
+  .narrative .label a:hover { opacity: 1; text-decoration: underline; }
   .narrative.prawica { border-left-color: #ea4335; }
   .narrative.prawica .label { color: #c5221f; }
   .narrative.lewica { border-left-color: #e37400; }
@@ -62,195 +78,291 @@
   .submit-btn { padding: 10px 32px; background: #1a73e8; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
   .submit-btn:hover { background: #1557b0; box-shadow: 0 1px 4px rgba(26,115,232,0.3); }
 
-  .status-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e0e0e0; padding: 10px 0; display: flex; justify-content: center; gap: 24px; align-items: center; font-size: 13px; z-index: 100; }
+  .status-bar { position: fixed; bottom: 0; left: 220px; right: 0; background: #fff; border-top: 1px solid #e0e0e0; padding: 10px 0; display: flex; justify-content: center; gap: 24px; align-items: center; font-size: 13px; z-index: 100; }
   .status-bar .count { color: #0d652d; font-weight: 500; }
   .status-bar .hint { color: #9aa0a6; }
 
-  .success-banner { display: none; position: fixed; top: 0; left: 0; right: 0; background: #e6f4ea; border-bottom: 1px solid #34a853; padding: 14px 0; text-align: center; font-size: 14px; color: #0d652d; font-weight: 500; z-index: 200; }
+  .success-banner { display: none; position: fixed; top: 0; left: 220px; right: 0; background: #e6f4ea; border-bottom: 1px solid #34a853; padding: 14px 0; text-align: center; font-size: 14px; color: #0d652d; font-weight: 500; z-index: 200; }
 
-  body { padding-bottom: 50px; }
+  @media (max-width: 768px) {
+    .sidebar { width: 180px; }
+    .main { margin-left: 180px; }
+    .status-bar { left: 180px; }
+    .success-banner { left: 180px; }
+    .narratives { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
 
 <div class="success-banner" id="successBanner">
-  Decyzje zapisane do workspace folderu. Agent je automatycznie odczyta.
+  Decyzje zapisane. Agent je automatycznie odczyta.
 </div>
 
-<div class="header">
-  <h1>Daylik Show — Decision Dashboard</h1>
-  <div class="date" id="briefDate">Tydzień 3-9 kwietnia 2026</div>
-  <div class="pipeline">Phase 1 Research → Twoja decyzja → Phase 2 Briefs + Beats</div>
+<!-- ── Sidebar ── -->
+<div class="sidebar">
+  <div class="sidebar-logo">DAYLIK SHOW</div>
+  <div class="sidebar-title">Briefy tygodniowe</div>
+  <div id="sidebarList"></div>
 </div>
 
-<div class="container" id="app"></div>
-
-<div class="status-bar">
-  <div class="count" id="statusCount">0 tematów wybranych</div>
-  <div class="hint">Kliknij decyzję przy każdym temacie</div>
+<!-- ── Main ── -->
+<div class="main">
+  <div class="header">
+    <h1>Daylik Show — Decision Dashboard</h1>
+    <div class="date" id="briefDate"></div>
+    <div class="pipeline">Phase 1 Research &rarr; Twoja decyzja &rarr; Phase 2 Briefs + Beats</div>
+  </div>
+  <div class="container" id="app"></div>
+  <div class="status-bar">
+    <div class="count" id="statusCount">0 temat&oacute;w wybranych</div>
+    <div class="hint">Kliknij decyzj&eograve; przy ka&zdot;dym temacie</div>
+  </div>
 </div>
 
 <script>
-// === DATA — Research Agent generates this JSON ===
-const briefData = {
-  date: "Tydzień 3-9 kwietnia 2026",
-  popularne_trendy: [
-    {
-      id: "pt-1",
-      title: "Tusk vs Nawrocki — kohabitacja piekielna",
-      summary: "Prezydent Nawrocki zawetował pożyczkę obronną UE 43,7 mld euro. Tusk mówi o sabocie bezpieczeństwa. A Polska w tym czasie nie potrafi uchwalić budżetu obronnego.",
-      hook: "Polska ma prezydenta z opozycji i premiera z koalicji. Efekt? System rozpadający się na oczach. Konflikt Nawrocki-Tusk to nie polityka — to paraliż decyzyjny.",
-      narratives: {
-        prawica: "Nawrocki słusznie broni suwerenności Polski przed kolejnym zadłużeniem Brukseli",
-        lewica: "Nawrocki sabotuje bezpieczeństwo Polski dla gier politycznych PiS-u",
-        libki: "Problem to paraliż decyzyjny — Polska nie ma procedury rozwiązywania konfliktów prezydent-premier",
-        luka: "Nikt nie mówi, że polska kohabitacja nie ma żadnych mechanizmów mediacji. 63% Polaków ocenia relację Nawrocki-Tusk jako złą. Kto płaci za ten konflikt? Obywatele."
+// ═══ DASHBOARD HISTORY — each weekly brief is an entry ═══
+const dashboardHistory = [
+  {
+    id: "week-2026-04-03-09",
+    label: "3-9 kwietnia 2026",
+    date: "Tydzie\u0144 3-9 kwietnia 2026",
+    popularne_trendy: [
+      {
+        id: "pt-1",
+        title: "Tusk vs Nawrocki \u2014 kohabitacja piekielna",
+        summary: "Prezydent Nawrocki zawetowa\u0142 po\u017cyczk\u0119 obronn\u0105 UE 43,7 mld euro. Tusk m\u00f3wi o sabota\u017cu bezpiecze\u0144stwa. A Polska w tym czasie nie potrafi uchwali\u0107 bud\u017cetu obronnego.",
+        hook: "Polska ma prezydenta z opozycji i premiera z koalicji. Efekt? System rozpadaj\u0105cy si\u0119 na oczach. Konflikt Nawrocki-Tusk to nie polityka \u2014 to parali\u017c decyzyjny.",
+        narratives: {
+          prawica: "Nawrocki s\u0142usznie broni suwerenno\u015bci Polski przed kolejnym zad\u0142u\u017ceniem Brukseli",
+          lewica: "Nawrocki sabotuje bezpiecze\u0144stwo Polski dla gier politycznych PiS-u",
+          libki: "Problem to parali\u017c decyzyjny \u2014 Polska nie ma procedury rozwi\u0105zywania konflikt\u00f3w prezydent-premier",
+          luka: "Nikt nie m\u00f3wi, \u017ce polska kohabitacja nie ma \u017cadnych mechanizm\u00f3w mediacji. 63% Polak\u00f3w ocenia relacj\u0119 Nawrocki-Tusk jako z\u0142\u0105."
+        },
+        urls: {
+          prawica: "https://wiadomosci.wp.pl/kulisy-weta-prezydenta-tak-nawrocki-dojrzewal-do-decyzji-o-safe-7263912232327488a",
+          lewica: "https://oko.press/weto-do-safe-nawrocki",
+          libki: "https://klubjagiellonski.pl/2026/01/22/kohabitacja-tuska-i-nawrockiego-obraz-medialny-jest-gorszy-niz-rzeczywistosc/",
+          luka: "https://www.rp.pl/komentarze/art43963921-michal-szuldrzynski-dlaczego-weto-do-safe-uderzylo-w-bezpieczenstwo-i-pozycje-polski-trzy-powody"
+        }
+      },
+      {
+        id: "pt-2",
+        title: "RPP ko\u0144czy obni\u017cki st\u00f3p \u2014 koniec marze\u0144 o ta\u0144szych kredytach",
+        summary: "Rada Polityki Pieni\u0119\u017cnej utrzymuje stopy na 3,75%. Ostatnia obni\u017cka. Dla m\u0142odych Polak\u00f3w kredyty hipoteczne pozostaj\u0105 niedost\u0119pne.",
+        hook: "\u015arednia cena mieszkania w Warszawie: 18 662 z\u0142/m\u00b2. Rata kredytu poch\u0142ania 50%+ pensji 30-latka. Pokolenie 25-35 zosta\u0142o systemowo wykluczone z rynku nieruchomo\u015bci.",
+        narratives: {
+          prawica: "Wysokie stopy to efekt polityki wydatkowej rz\u0105du Tuska \u2014 rozrzuca publiczne pieni\u0105dze",
+          lewica: "Wysokie stopy uderzaj\u0105 w najubo\u017cszych \u2014 rz\u0105d powinien szuka\u0107 innych narz\u0119dzi wsparcia",
+          libki: "Marcowa obni\u017cka by\u0142a ostatni\u0105 \u2014 rynek musi si\u0119 dostosowa\u0107",
+          luka: "Nikt nie \u0142\u0105czy dw\u00f3ch fakt\u00f3w: stopy 3,75% + ceny mieszka\u0144 rosn\u0105 5% r/r = pokolenie 30-latk\u00f3w ma niemo\u017cliwy wyb\u00f3r."
+        },
+        urls: {
+          prawica: "https://www.rp.pl/biznes/art43922831-spadek-urodzen-w-polsce-co-naprawde-niszczy-demografie",
+          lewica: "https://www.money.pl/gospodarka/oskar-sobolewski/dzietnosc-szoruje-po-dnie-to-wplynie-na-rynek-pracy-7167893307828896a.html",
+          libki: "https://obserwatorgospodarczy.pl/2025/05/06/wspolczynnik-dzietnosci-w-polsce-na-katastrofalnie-niskim-poziomie/",
+          luka: "https://echoswiat.pl/demografia-polski-2026-dane-gus/"
+        }
       }
-    },
-    {
-      id: "pt-2",
-      title: "RPP kończy obniżki stóp — koniec marzeń o tańszych kredytach",
-      summary: "Rada Polityki Pieniężnej utrzymuje stopy na 3,75%. Ostatnia obniżka. Dla młodych Polaków kredyty hipoteczne pozostają niedostępne.",
-      hook: "Średnia cena mieszkania w Warszawie: 18 662 zł/m². Rata kredytu pochłania 50%+ pensji 30-latka. Pokolenie 25-35 zostało systemowo wykluczone z rynku nieruchomości.",
-      narratives: {
-        prawica: "Wysokie stopy to efekt polityki wydatkowej rządu Tuska — rozrzuca publiczne pieniądze",
-        lewica: "Wysokie stopy uderzają w najbiedniejszych — rząd powinien szukać innych narzędzi wsparcia",
-        libki: "Marcowa obniżka była ostatnią — member RPP Ludwik Kotecki powiedział to wprost. Rynek musi się dostosować.",
-        luka: "Nikt nie łączy dwóch faktów: stopy 3,75% + ceny mieszkań rosną 5% r/r = pokolenie 30-latków ma niemożliwy wybór. Polska jest jednym z najgorszych rynków mieszkaniowych w UE dla młodych."
+    ],
+    discovery: [
+      {
+        id: "disc-1",
+        title: "90% kasy z KPO posz\u0142o na p\u0142ynno\u015b\u0107 \u2014 a mia\u0142o i\u015b\u0107 na inwestycje",
+        summary: "Prezes NIK Mariusz Ha\u0142adyj ujawni\u0142: oko\u0142o 90% z 58,1 mld euro z KPO trafi\u0142o na zarz\u0105dzanie p\u0142ynno\u015bci\u0105 bud\u017cetu, nie na realne inwestycje.",
+        hook: "Wielki plan na papierze, pustka w realu. Rz\u0105d nie wie dok\u0142adnie, ile pieni\u0119dzy z KPO faktycznie wydano na inwestycje.",
+        narratives: {
+          prawica: "Kompromitacja rz\u0105du Tuska \u2014 obiecywali miliardy na inwestycje, a KPO pos\u0142u\u017cy\u0142o do \u0142atania dziury bud\u017cetowej",
+          lewica: "Problem jest strukturalny \u2014 op\u00f3\u017anienia wdro\u017ceniowe to dziedzictwo blokady za rz\u0105d\u00f3w PiS",
+          libki: "\u015arodki z KPO powinny nap\u0119dza\u0107 gospodark\u0119, a zamiast tego s\u0142u\u017c\u0105 obs\u0142udze d\u0142ugu \u2014 marnotrawstwo",
+          luka: "Nikt nie pyta: ile z tych 58 mld euro FAKTYCZNIE zmieni\u0142o \u017cycie przeci\u0119tnego Polaka?"
+        },
+        urls: {
+          prawica: "https://dorzeczy.pl/opinie/851390/konfederacja-sklada-projekt-ustawy-ksef-dobrowolny.html",
+          lewica: "https://oko.press/po-mnie-chocby-potop-w-co-gra-prezydent",
+          libki: "https://tep.org.pl/liczba-polakow-maleje-i-nie-ma-szans-na-odwrocenie-tej-tendencji-tog-6-2026/",
+          luka: "https://www.rp.pl/spoleczenstwo/art43704751-mimo-fatalnej-demografii-rzad-nawet-nie-sprawdza-czy-nowe-ustawy-maja-na-nia-wplyw"
+        }
+      },
+      {
+        id: "disc-2",
+        title: "5000 z\u0142 kary za skarpetk\u0119 w z\u0142ym koszu \u2014 absurd segregacji tekstyli\u00f3w",
+        summary: "Od 2025: za wrzucenie skarpetki do zwyk\u0142ego kosza grozi mandat do 500 z\u0142 (s\u0105d: do 5000 z\u0142). Problem: gminy nie maj\u0105 obowi\u0105zku odbierania tekstyli\u00f3w.",
+        hook: "Pa\u0144stwo ka\u017ce ci segregowa\u0107 tekstylia, ale nie zapewnia infrastruktury do ich oddania. W Bia\u0142ymstoku w 2025 wydano 421 decyzji o karach.",
+        narratives: {
+          prawica: "UE narzuca absurdalne przepisy, a polski rz\u0105d bezkrytycznie je wdra\u017ca bez przygotowania",
+          lewica: "Segregacja jest wa\u017cna, ale rz\u0105d musi zapewni\u0107 realne warunki \u2014 nie mo\u017cna kara\u0107 ludzi za brak systemu",
+          libki: "Problem polega na braku infrastruktury odpadowej, a nie na samej idei segregacji",
+          luka: "Polska produkuje ~500 tys. ton odpad\u00f3w tekstylnych rocznie \u2014 a recyklinguje mniej ni\u017c 10%."
+        },
+        urls: {
+          prawica: "https://nczas.info/2026/03/14/inwigilacja-pod-plaszczykiem-cyfryzacji-rusza-spoleczny-opor-przeciwko-ksef-zalegalizowane-szpiegowanie-video/",
+          lewica: "https://www.portalsamorzadowy.pl/komunikacja-spoleczna/likwidacja-prasy-wydawanej-przez-samorzady-ministerstwo-pracuje-nad-przepisami,600911.html",
+          libki: "https://itwiz.pl/sankcje-obowiazujace-e-sklepy-w-2026-roku-jak-uniknac-wysokich-kar-i-cyfrowej-izolacji/",
+          luka: "https://www.rp.pl/prawo-w-polsce/art43481531-zamieszanie-z-nowa-ustawa-medialna-wydawcy-nagle-wykreslenie-przepisow"
+        }
+      },
+      {
+        id: "disc-3",
+        title: "Po\u0142owa opinii w sklepach to \u015bciema \u2014 UOKiK wyci\u0105ga bat na fake reviews",
+        summary: "Od marca 2026 UOKiK egzekwuje \u2018czarn\u0105 list\u0119\u2019 praktyk rynkowych. Kary: do 10% rocznego obrotu firmy, do 2 mln z\u0142 na prezesa.",
+        hook: "Algorytmy AI zaczynaj\u0105 blokowa\u0107 nieuczciwe sklepy. Ale pytanie brzmi: skoro UOKiK o tym wie od lat, to dlaczego dopiero teraz?",
+        narratives: {
+          prawica: "Regulacja to dobry kierunek, ale UOKiK nie powinien zast\u0119powa\u0107 rynku \u2014 niech konsument decyduje",
+          lewica: "Ochrona konsumenta to priorytet \u2014 wreszcie pa\u0144stwo bierze stron\u0119 kupuj\u0105cego",
+          libki: "Kary s\u0105 potrzebne, ale egzekucja kuleje \u2014 pa\u0144stwo nak\u0142ada miliardowe kary, kt\u00f3rych nie potrafi \u015bci\u0105gn\u0105\u0107",
+          luka: "Nikt nie pyta o Amazon, Allegro, Temu \u2014 wielcy gracze maj\u0105 setki tysi\u0119cy opinii i AI. Ma\u0142e sklepy dostan\u0105 kary."
+        },
+        urls: {
+          prawica: "https://www.dlahandlu.pl/e-commerce/weszlo-nowe-prawo-uokik-konczy-poblazanie-e-sklepom,168631.html",
+          lewica: "https://www.infor.pl/prawo/prawa-konsumenta/konsument-w-sieci/7554183,kary-uokik-za-falszywe-opinie-2026-do-10-obrotu-dla-sklepu-i-2-mln-zl-dla-prezesa-a-konsument-zwraca-towar-po-12-miesiacach-czarna-lista-ai-sztuczna-inteligencja-ecommerce-sklepy-internetowe-zakupy-reklama-falszywe-opinie-kupione-gwiazdki.html",
+          libki: "https://itwiz.pl/sankcje-obowiazujace-e-sklepy-w-2026-roku-jak-uniknac-wysokich-kar-i-cyfrowej-izolacji/",
+          luka: "https://spidersweb.pl/2026/04/uokik-nieuczciwe-opinie-kary.html"
+        }
+      },
+      {
+        id: "disc-4",
+        title: "Wsp\u00f3\u0142czynnik dzietno\u015bci 1,10 \u2014 Polska wymiera szybciej ni\u017c prognozy",
+        summary: "W 2025 urodzi\u0142o si\u0119 238 tys. dzieci \u2014 o 40% mniej ni\u017c w 2017. Wsp\u00f3\u0142czynnik dzietno\u015bci: 1,10 (trzeba 2,1 dla stabilno\u015bci).",
+        hook: "Polska wymiera \u2014 dos\u0142ownie \u2014 a \u017caden polityk nie ma planu. To najwi\u0119ksza tykaj\u0105ca bomba pod polsk\u0105 gospodark\u0119, emerytury i system zdrowia.",
+        narratives: {
+          prawica: "Kryzys demograficzny to efekt liberalizacji obyczajowej i braku wsparcia tradycyjnej rodziny",
+          lewica: "Kobiety nie rodz\u0105, bo nie maj\u0105 warunk\u00f3w \u2014 brak \u017c\u0142obk\u00f3w, niestabilne zatrudnienie, luka p\u0142acowa",
+          libki: "Problem jest ekonomiczny \u2014 mieszkania za drogie, praca niepewna, wsparcie nieefektywne",
+          luka: "Polska wydaje ~4% PKB na polityk\u0119 prorodinn\u0105 (sporo!), ale pieni\u0105dze nie trafiaj\u0105 w potrzeby \u2014 bo nikt nie zbada\u0142, czego FAKTYCZNIE potrzebuj\u0105 m\u0142odzi."
+        },
+        urls: {
+          prawica: "https://obserwatorgospodarczy.pl/2025/05/06/wspolczynnik-dzietnosci-w-polsce-na-katastrofalnie-niskim-poziomie/",
+          lewica: "https://glosseniora.pl/2025/08/08/jak-zwiekszyc-dzietnosc-w-polsce-praktyczne-rozwiazania-na-trudnosci/",
+          libki: "https://klubjagiellonski.pl/2025/09/14/demografii-nie-uratuja-tanie-mieszkania-zlobki-i-800-rozwiazanie-lezy-gdzie-indziej/",
+          luka: "https://www.rp.pl/spoleczenstwo/art43704751-mimo-fatalnej-demografii-rzad-nawet-nie-sprawdza-czy-nowe-ustawy-maja-na-nia-wplyw"
+        }
+      },
+      {
+        id: "disc-5",
+        title: "Gazety samorz\u0105dowe zabijaj\u0105 lokaln\u0105 pras\u0119 \u2014 UMK chcia\u0142a zakazu i si\u0119 wycofa\u0142a",
+        summary: "Samorz\u0105dy wydaj\u0105 setki gazet finansowanych z publicznych pieni\u0119dzy \u2014 oficjalnie informacyjne, faktycznie propagandowe. 66% lokalnych dziennikarzy spotyka si\u0119 z naciskami.",
+        hook: "Historia o wolno\u015bci prasy na poziomie lokalnym \u2014 tam gdzie nikt nie patrzy. Samorz\u0105dy wydaj\u0105 gazety za publiczne pieni\u0105dze, w kt\u00f3rych nigdy nie pojawi si\u0119 krytyka w\u0142adzy.",
+        narratives: {
+          prawica: "Zakaz medi\u00f3w samorz\u0105dowych to atak na prawo lokalnych spo\u0142eczno\u015bci do informacji",
+          lewica: "Media samorz\u0105dowe to propaganda \u2014 trzeba wspiera\u0107 niezale\u017cne media lokalne",
+          libki: "Rynek powinien decydowa\u0107 \u2014 je\u015bli ludzie chc\u0105 niezale\u017cnej prasy, zap\u0142ac\u0105 za ni\u0105",
+          luka: "W wi\u0119kszo\u015bci ma\u0142ych gmin gazeta samorz\u0105dowa to JEDYNE medium. Kto kontroluje informacj\u0119 na poziomie lokalnym?"
+        },
+        urls: {
+          prawica: "https://www.portalsamorzadowy.pl/zmiany-w-prawie/samorzady-dalej-beda-mogly-wydawac-swoja-prase-to-sie-nie-podoba,641228.html",
+          lewica: "https://e-sochaczew.pl/artykul/walka-o-lokalna-prase-n2208560",
+          libki: "https://www.wirtualnemedia.pl/samorzady-bez-zakazu-wydawania-prasy-ofiarami-w-duzych-miastach-sa-wyborcza-i-polska-press,7230901266787264a",
+          luka: "https://klubjagiellonski.pl/2026/02/02/aleksander-miszalski-w-ogniu-krytyki-czy-media-samorzadowe-moga-mu-pomoc/"
+        }
+      },
+      {
+        id: "disc-6",
+        title: "KSeF od 1 kwietnia \u2014 miliony firm wchodz\u0105 w system, kt\u00f3ry nie dzia\u0142a",
+        summary: "Od 1 kwietnia KSeF obj\u0105\u0142 obowi\u0105zkiem miliony mikro, ma\u0142ych i \u015brednich firm. Pierwsza faza: 45% manager\u00f3w ocenia negatywnie, systemy pada\u0142y.",
+        hook: "KSeF to historia o tym, jak pa\u0144stwo wymy\u015bli\u0142o system kontroli \u2014 ale nie potrafi\u0142o go uruchomi\u0107 bez chaosu. \u2018Mia\u0142 by\u0107 prze\u0142om, jest frustracja.\u2019",
+        narratives: {
+          prawica: "KSeF to narz\u0119dzie kontroli \u2014 rz\u0105d chce \u015bledzi\u0107 ka\u017cd\u0105 transakcj\u0119 kosztem wolno\u015bci przedsi\u0119biorc\u00f3w",
+          lewica: "Cyfryzacja jest potrzebna, ale wdro\u017cenie jest fatalnie przygotowane \u2014 cierpi\u0105 pracownicy i ma\u0142e firmy",
+          libki: "Idea jest dobra, ale wykonanie katastrofalne \u2014 typowe polskie IT w urz\u0119dach",
+          luka: "Nikt nie pyta, ile KSeF kosztuje przedsi\u0119biorc\u00f3w. Ka\u017cda firma musia\u0142a kupi\u0107/dostosowa\u0107 oprogramowanie. Te koszty to miliardy."
+        },
+        urls: {
+          prawica: "https://nczas.info/2026/01/27/narzedzie-totalnej-inwigilacji-wszystko-w-rekach-panstwa-rpo-zada-wyjasnien/",
+          lewica: "https://www.telepolis.pl/artykuly/1-i-7-kwietnia-paraliz-cyfryzacja-ksef-faktury",
+          libki: "https://www.infakt.pl/blog/wdrozenie-ksef-harmonogram-2026-r/",
+          luka: "https://www.gazetaprawna.pl/wiadomosci/kraj/artykuly/10631852,ksef-kontrowersje-rpo-konstytucyjnosc-faktur.html"
+        }
+      },
+      {
+        id: "disc-7",
+        title: "Krak\u00f3w referendum \u2014 pierwsze du\u017ce miasto chce odwo\u0142a\u0107 prezydenta",
+        summary: "24 maja 2026 Krak\u00f3w g\u0142osuje nad odwo\u0142aniem prezydenta Miszalskiego i Rady Miasta. Pierwszy recall w mie\u015bcie wojew\u00f3dzkim w Polsce.",
+        hook: "Precedens: czy demokracja lokalna w Polsce zacznie dzia\u0142a\u0107 jak recall elections w USA? Ale pr\u00f3g frekwencji jest ustawiony tak wysoko, \u017ce referendum prawie nigdy nie jest wi\u0105\u017c\u0105ce.",
+        narratives: {
+          prawica: "Pora\u017cka koalicji rz\u0105dz\u0105cej na poziomie lokalnym \u2014 Krak\u00f3w m\u00f3wi \u2018do\u015b\u0107\u2019",
+          lewica: "Referendum to narz\u0119dzie demokratyczne \u2014 je\u015bli ludzie chc\u0105 zmiany, maj\u0105 do tego prawo",
+          libki: "Referendum odwo\u0142awcze powinno by\u0107 normalnym mechanizmem w polskiej demokracji",
+          luka: "Progi frekwencyjne w polskich referendach s\u0105 ustawione tak, \u017ce prawie NIGDY nie s\u0105 wi\u0105\u017c\u0105ce. Fikcja demokracji bezpo\u015bredniej."
+        },
+        urls: {
+          prawica: "https://dorzeczy.pl/opinie/870268/referendum-w-krakowie-miszalski-namawia-do-bojkotu-i-liczy-na-niska-frekwencje.html",
+          lewica: "https://oko.press/referendum-bitwa-o-krakow-czyli-dlaczego-tusk-juz-siega-po-plan-b",
+          libki: "https://krknews.pl/referendum-w-krakowie-wszystko-co-musisz-o-nim-wiedziec-fakty-liczby-terminy/",
+          luka: "https://portalkomunalny.pl/referendum-w-krakowie-w-sprawie-odwolania-prezydenta-i-rady-598927/"
+        }
       }
-    }
-  ],
-  discovery: [
-    {
-      id: "disc-1",
-      title: "90% kasy z KPO poszło na płynność — a miało iść na inwestycje",
-      summary: "Prezes NIK Mariusz Haładyj ujawnił: około 90% z 58,1 mld euro z Krajowego Planu Odbudowy trafiło na zarządzanie płynnością budżetu, nie na realne inwestycje. Polska walczyła z Brukselą, media świętowały 'sukces' — potem 90% hajsu poszło na obsługę bieżących wydatków.",
-      hook: "Wielki plan na papierze, pustka w realu. Rząd nie wie dokładnie, ile pieniędzy z KPO faktycznie wydano na inwestycje. Ani Minister Funduszy, ani Minister Finansów nie mają pełnych i wiarygodnych danych.",
-      narratives: {
-        prawica: "Kompromitacja rządu Tuska — obiecywali miliardy na inwestycje, a KPO posłużyło do łatania dziury budżetowej",
-        lewica: "Problem jest strukturalny — opóźnienia wdrożeniowe to dziedzictwo blokady za rządów PiS",
-        libki: "Środki z KPO powinny napędzać gospodarkę, a zamiast tego służą obsłudze długu — marnotrawstwo",
-        luka: "Nikt nie pyta: ile z tych 58 mld euro FAKTYCZNIE zmieniło życie przeciętnego Polaka? Gdzie są szkoły, szpitale, drogi? Żadna redakcja nie zrobiła mapy 'co KPO dało twojemu miastu'."
+    ],
+    bonusy: [
+      {
+        id: "bonus-1",
+        title: "Polska nie jedzie na Mundial 2026 \u2014 memy eksploduj\u0105",
+        summary: "Polska przegra\u0142a bara\u017c ze Szwecj\u0105 2:3. Internet: #MundialBezPolski. Tematy: \u2018Polska szwedzki\u2019, por\u00f3wnania do \u2018wiecznego pechowca\u2019."
+      },
+      {
+        id: "bonus-2",
+        title: "KSeF od 1 kwietnia \u2014 \u2018to nie Prima Aprilis\u2019",
+        summary: "W dniu wej\u015bcia KSeF (1 kwietnia), polscy przedsi\u0119biorcy na X i Wykopie wrzucali memy o \u2018najlepszym primaaprilisowym \u017carcie rz\u0105du\u2019. Hashtag #KSeF trendowa\u0142."
+      },
+      {
+        id: "bonus-3",
+        title: "Memy o te\u015bciowych podbijaj\u0105 internet \u2014 nowa fala humoru",
+        summary: "Nie stare \u017carty \u2014 nowa fala: \u2018babcia m\u00f3wi \u017ce za jej czas\u00f3w nie by\u0142o depresji, bo nikt nie mia\u0142 czasu na smutki\u2019. Setki tysi\u0119cy udost\u0119pnie\u0144."
       }
-    },
-    {
-      id: "disc-2",
-      title: "5000 zł kary za skarpetkę w złym koszu — absurd segregacji tekstyliów",
-      summary: "Od 2025: za wrzucenie skarpetki do zwykłego kosza grozi mandat do 500 zł (sąd: do 5000 zł) i podwyższona opłata za śmieci do +400%. Problem: gminy nie mają obowiązku odbierania tekstyliów. Efekt: kontenery PCK przepełnione, ubrania w lasach, ludzie palą je w piecach.",
-      hook: "Państwo każe ci segregować tekstylia, ale nie zapewnia infrastruktury do ich oddania. W Białystoku w 2025 wydano 421 decyzji o karach — o 680% więcej niż dwa lata wcześniej.",
-      narratives: {
-        prawica: "UE narzuca absurdalne przepisy, a polski rząd bezkrytycznie je wdraża bez przygotowania infrastruktury",
-        lewica: "Segregacja jest ważna, ale rząd musi zapewnić realne warunki — nie można karać ludzi za brak systemu",
-        libki: "Problem polega na braku infrastruktury odpadowej, a nie na samej idei segregacji",
-        luka: "Polska produkuje ~500 tys. ton odpadów tekstylnych rocznie — a recyklinguje mniej niż 10%. Kary to teatr, bo systemu recyklingu po prostu nie ma."
-      }
-    },
-    {
-      id: "disc-3",
-      title: "Połowa opinii w sklepach to ściema — UOKiK wyciąga bat na fake reviews",
-      summary: "Od marca 2026 UOKiK egzekwuje 'czarną listę' praktyk rynkowych. Kary: do 10% rocznego obrotu firmy, do 2 mln zł na prezesa. UOKiK nie musi udowadniać, że konkretny konsument został oszukany — wystarczy brak procedury weryfikacji opinii. Każdy Polak kupujący w internecie sprawdza opinie. A połowa może być fałszywa.",
-      hook: "Algorytmy AI zaczynają blokować nieuczciwe sklepy. Ale pytanie brzmi: skoro UOKiK o tym wie od lat, to dlaczego dopiero teraz? W 2025 nałożono miliard zł kar — ale ile faktycznie ściągnięto? Od 2021 roku: 3,6 mld zł kar 'na papierze' — a wpłacono ułamek.",
-      narratives: {
-        prawica: "Regulacja to dobry kierunek, ale UOKiK nie powinien zastępować rynku — niech konsument decyduje",
-        lewica: "Ochrona konsumenta to priorytet — wreszcie państwo bierze stronę kupującego",
-        libki: "Kary są potrzebne, ale egzekucja kuleje — państwo nakłada miliardowe kary, których nie potrafi ściągnąć",
-        luka: "Nikt nie pyta o Amazon, Allegro, Temu — wielcy gracze mają setki tysięcy opinii i AI do filtrowania. Małe sklepy dostaną kary, a platformy dalej będą jeździć na fałszywych gwiazdkach."
-      }
-    },
-    {
-      id: "disc-4",
-      title: "Współczynnik dzietności 1,10 — Polska wymiera szybciej niż prognozy",
-      summary: "W 2025 urodziło się 238 tys. dzieci — o 40% mniej niż w 2017. Współczynnik dzietności: 1,10 (trzeba 2,1 dla stabilności). Prognozy 2026: 210 tys. urodzeń — historyczne minimum. Do 2050 populacja w wieku produkcyjnym spadnie o 20%. Żaden polityk nie traktuje tego poważnie. 500+ nie zadziałało — urodzeń jest MNIEJ niż przed programem.",
-      hook: "Polska wymiera — dosłownie — a żaden polityk nie ma planu. To największa tykająca bomba pod polską gospodarkę, emerytury i system zdrowia. Rząd nawet nie bada wpływu nowych ustaw na demografię — jak ustalił 'Rzeczpospolita'.",
-      narratives: {
-        prawica: "Kryzys demograficzny to efekt liberalizacji obyczajowej i braku wsparcia tradycyjnej rodziny",
-        lewica: "Kobiety nie rodzą, bo nie mają warunków — brak żłobków, niestabilne zatrudnienie, luka płacowa",
-        libki: "Problem jest ekonomiczny — mieszkania za drogie, praca niepewna, wsparcie nieefektywne",
-        luka: "Polska wydaje ~4% PKB na politykę prorodzinną (sporo!), ale pieniądze nie trafiają w potrzeby — bo nikt nie zbadał, czego FAKTYCZNIE potrzebują młodzi ludzie. Robią politykę demograficzną bez badań demograficznych."
-      }
-    },
-    {
-      id: "disc-5",
-      title: "Gazety samorządowe zabijają lokalną prasę — UMK chciała zakazu i się wycofała",
-      summary: "Samorządy wydają setki gazet i portali finansowanych z publicznych pieniędzy — oficjalnie 'informacyjne', faktycznie propagandowe. 66% lokalnych dziennikarzy spotyka się z naciskami ze strony władz. Ministerstwo Kultury obiecało zakaz — ale przepis 'zniknął' z projektu. W Krakowie Miszalski zwiększa nakład gazety tuż przed referendum o odwołanie.",
-      hook: "Historia o wolności prasy na poziomie lokalnym — tam gdzie nikt nie patrzy. Samorządy wydają gazety za publiczne pieniądze, w których nigdy nie pojawi się krytyka władzy. A gdy rząd miał to ukrócić — przepis 'magicznie znikał' z ustawy.",
-      narratives: {
-        prawica: "Zakaz mediów samorządowych to atak na prawo lokalnych społeczności do informacji",
-        lewica: "Media samorządowe to propaganda — trzeba wspierać niezależne media lokalne",
-        libki: "Rynek powinien decydować — jeśli ludzie chcą niezależnej prasy, zapłacą za nią",
-        luka: "Nikt nie mówi, że w większości małych gmin gazeta samorządowa to JEDYNE medium. Nie chodzi o zakaz — chodzi o to, kto kontroluje informację na poziomie lokalnym."
-      }
-    },
-    {
-      id: "disc-6",
-      title: "KSeF od 1 kwietnia — miliony firm wchodzą w system, który nie działa",
-      summary: "Od 1 kwietnia Krajowy System e-Faktur objął obowiązkiem miliony mikro, małych i średnich firm. Pierwsza faza (duże firmy): 45% managerów ocenia negatywnie, systemy logowania padały, firmy czekały na numery faktur. RPO uznał KSeF za 'narzędzie totalnej inwigilacji'. Ministerstwo Finansów: okres łaski — w 2026 bez kar za błędy. Ale firmy musiały już dostosować systemy (tysiące złotych).",
-      hook: "KSeF to historia o tym, jak państwo wymyśliło system kontroli — ale nie potrafiło go uruchomić bez chaosu. 'Miał być przełom, jest frustracja.' Rząd sam przyznaje, że system nie jest gotowy — dlatego nie kary za rok.",
-      narratives: {
-        prawica: "KSeF to narzędzie kontroli — rząd chce śledzić każdą transakcję kosztem wolności przedsiębiorców",
-        lewica: "Cyfryzacja jest potrzebna, ale wdrożenie jest fatalnie przygotowane — cierpią pracownicy i małe firmy",
-        libki: "Idea jest dobra, ale wykonanie katastrofalne — typowe polskie IT w urzędach",
-        luka: "Nikt nie pyta, ile KSeF kosztuje przedsiębiorców. Każda firma musiała kupić/dostosować oprogramowanie, przeszkolić ludzi, zmienić procesy. Te koszty to miliardy — i nikt ich nie pokrywa."
-      }
-    },
-    {
-      id: "disc-7",
-      title: "Kraków referendum — pierwsze duże miasto chce odwołać prezydenta",
-      summary: "24 maja 2026 Kraków głosuje nad odwołaniem prezydenta Aleksandra Miszalskiego i Rady Miasta. Pierwszy recall w mieście wojewódzkim w Polsce. Miszalski wygrał w 2024 minimalnie (5434 głosy). Aby referendum było ważne, do urn musi przyjść 158 555 osób. Inicjatorem: Rafał Zontek.",
-      hook: "Kraków to drugie miasto Polski — i przechodzi przez coś, co nigdy wcześniej się nie wydarzyło. Precedens: czy demokracja lokalna w Polsce zacznie działać jak recall elections w USA? Ale próg frekwencji jest ustawiony tak wysoko, że organizatorzy muszą zmobilizować więcej ludzi niż Miszalski w wyborach dostał.",
-      narratives: {
-        prawica: "Porażka koalicji rządzącej na poziomie lokalnym — Kraków mówi 'dość'",
-        lewica: "Referendum to narzędzie demokratyczne — jeśli ludzie chcą zmiany, mają do tego prawo",
-        libki: "Referendum odwoławcze powinno być normalnym mechanizmem w polskiej demokracji",
-        luka: "Nikt nie mówi, że progi frekwencyjne w polskich referendach są ustawione tak, że prawie NIGDY nie są wiążące. To fikcja demokracji bezpośredniej — system zaprojektowany, żeby referenda nie działały."
-      }
-    }
-  ],
-  bonusy: [
-    {
-      id: "bonus-1",
-      title: "Polska nie jedzie na Mundial 2026 — memy eksplodują",
-      summary: "Polska przegrała baraż ze Szwecją 2:3. Internet: #MundialBezPolski, nawiązania do klątwy ('ostatnie zwycięstwo ze Szwecją na wyjeździe: 1930'). Tematy: 'Polska szwedzki', porównania do 'wiecznego pechowca'."
-    },
-    {
-      id: "bonus-2",
-      title: "KSeF od 1 kwietnia — 'to nie Prima Aprilis'",
-      summary: "W dniu wejścia KSeF (1 kwietnia), polscy przedsiębiorcy na X i Wykopie wrzucali memy o 'najlepszym primaaprilisowym żarcie rządu'. Hashtag #KSeF trendował. Frustacja + humor = viralowy materiał."
-    },
-    {
-      id: "bonus-3",
-      title: "Memy o teściowych podbijają internet — nowa fala humoru",
-      summary: "Nie stare żarty — nowa fala: 'babcia mówi że za jej czasów nie było depresji, bo nikt nie miał czasu na smutki'. Setki tysięcy udostępnień na TikToku i Facebooku. Subtelne obserwacje o różnicach między pokoleniami."
-    }
-  ]
-};
+    ]
+  }
+];
 
-// === STATE ===
+// ═══ STATE ═══
+let currentBriefIdx = 0;
 const decisions = {};
 
+function loadBrief(idx) {
+  currentBriefIdx = idx;
+  Object.keys(decisions).forEach(k => delete decisions[k]);
+  renderSidebar();
+  render();
+}
+
+function renderSidebar() {
+  const list = document.getElementById('sidebarList');
+  let html = '';
+  dashboardHistory.forEach((brief, i) => {
+    const topicCount = brief.popularne_trendy.length + brief.discovery.length + brief.bonusy.length;
+    html += `<a class="sidebar-item ${i === currentBriefIdx ? 'active' : ''}" onclick="loadBrief(${i})">
+      <div class="item-date">${brief.label}</div>
+      <div class="item-count">${topicCount} temat\u00f3w</div>
+    </a>`;
+  });
+  list.innerHTML = html;
+}
+
 function render() {
+  const brief = dashboardHistory[currentBriefIdx];
+  document.getElementById('briefDate').textContent = brief.date;
+
   const app = document.getElementById('app');
   let html = '';
 
-  html += '<div class="section-label">POPULARNE TRENDY — co wszyscy wiedzą, ale nikt nie widzi kąta</div>';
-  briefData.popularne_trendy.forEach(t => { html += renderCard(t, 'popularne'); });
+  html += '<div class="section-label">POPULARNE TRENDY \u2014 co wszyscy wiedz\u0105, ale nikt nie widzi k\u0105ta</div>';
+  brief.popularne_trendy.forEach(t => { html += renderCard(t, 'popularne'); });
 
-  html += '<div class="section-label">DISCOVERY — tematy pod radarem</div>';
-  briefData.discovery.forEach(t => { html += renderCard(t, 'discovery'); });
+  html += '<div class="section-label">DISCOVERY \u2014 tematy pod radarem</div>';
+  brief.discovery.forEach(t => { html += renderCard(t, 'discovery'); });
 
-  html += '<div class="section-label">BONUSY — memy i virale</div>';
-  briefData.bonusy.forEach(t => { html += renderCard(t, 'bonus', true); });
+  html += '<div class="section-label">BONUSY \u2014 memy i virale</div>';
+  brief.bonusy.forEach(t => { html += renderCard(t, 'bonus', true); });
 
   html += `
   <div class="general-notes">
-    <h3>Ogólne uwagi, dodatkowe tematy, linki</h3>
-    <textarea id="generalNotes" placeholder="Wklej linki, dokumenty, dodatkowe pomysły, uwagi..."></textarea>
+    <h3>Og\u00f3lne uwagi, dodatkowe tematy, linki</h3>
+    <textarea id="generalNotes" placeholder="Wklej linki, dokumenty, dodatkowe pomys\u0142y, uwagi..."></textarea>
     <div class="hint">To pole trafia do agenta jako kontekst do Phase 2.</div>
   </div>`;
 
   html += `
   <div class="submit-section">
-    <button class="submit-btn" onclick="submitDecisions()">Wyślij do agenta</button>
+    <button class="submit-btn" onclick="submitDecisions()">Wy\u015blij do agenta</button>
   </div>`;
 
   app.innerHTML = html;
@@ -261,7 +373,6 @@ function render() {
 function renderCard(topic, type, isBonus) {
   const d = decisions[topic.id] || {};
   const stateClass = d.decision === 'opener' ? 'selected-opener' : d.decision === 'yes' ? 'selected-yes' : d.decision === 'no' ? 'selected-no' : '';
-  const tagLabel = type === 'popularne' ? 'POPULARNE' : type === 'discovery' ? 'DISCOVERY' : 'BONUS';
 
   let html = `<div class="topic-card ${stateClass}" id="card-${topic.id}">`;
   html += `<div class="topic-title">${topic.title}</div>`;
@@ -269,25 +380,26 @@ function renderCard(topic, type, isBonus) {
   if (topic.hook) html += `<div class="topic-hook">${topic.hook}</div>`;
 
   if (topic.narratives) {
+    const urls = topic.urls || {};
     html += '<div class="narratives">';
-    html += `<div class="narrative prawica"><div class="label">Prawica</div><div class="text">${topic.narratives.prawica}</div></div>`;
-    html += `<div class="narrative lewica"><div class="label">Lewica</div><div class="text">${topic.narratives.lewica}</div></div>`;
-    html += `<div class="narrative libki"><div class="label">Libki</div><div class="text">${topic.narratives.libki}</div></div>`;
-    html += `<div class="narrative luka"><div class="label">Luka narracyjna</div><div class="text">${topic.narratives.luka}</div></div>`;
+    html += `<div class="narrative prawica"><div class="label">Prawica ${urls.prawica ? '<a href="'+urls.prawica+'" target="_blank">\u2197 \u017ar\u00f3d\u0142o</a>' : ''}</div><div class="text">${topic.narratives.prawica}</div></div>`;
+    html += `<div class="narrative lewica"><div class="label">Lewica ${urls.lewica ? '<a href="'+urls.lewica+'" target="_blank">\u2197 \u017ar\u00f3d\u0142o</a>' : ''}</div><div class="text">${topic.narratives.lewica}</div></div>`;
+    html += `<div class="narrative libki"><div class="label">Libki ${urls.libki ? '<a href="'+urls.libki+'" target="_blank">\u2197 \u017ar\u00f3d\u0142o</a>' : ''}</div><div class="text">${topic.narratives.libki}</div></div>`;
+    html += `<div class="narrative luka"><div class="label">Luka narracyjna ${urls.luka ? '<a href="'+urls.luka+'" target="_blank">\u2197 \u017ar\u00f3d\u0142o</a>' : ''}</div><div class="text">${topic.narratives.luka}</div></div>`;
     html += '</div>';
   }
 
   html += '<div class="decision-row">';
   if (!isBonus) {
-    html += `<button class="decision-btn ${d.decision==='opener'?'active-opener':''}" onclick="setDecision('${topic.id}','opener')">⭐ OPENER</button>`;
+    html += `<button class="decision-btn ${d.decision==='opener'?'active-opener':''}" onclick="setDecision('${topic.id}','opener')">OPENER</button>`;
   }
-  html += `<button class="decision-btn ${d.decision==='yes'?'active-yes':''}" onclick="setDecision('${topic.id}','yes')">✅ Bierzemy</button>`;
-  html += `<button class="decision-btn ${d.decision==='no'?'active-no':''}" onclick="setDecision('${topic.id}','no')">❌ Nie</button>`;
+  html += `<button class="decision-btn ${d.decision==='yes'?'active-yes':''}" onclick="setDecision('${topic.id}','yes')">Bierzemy</button>`;
+  html += `<button class="decision-btn ${d.decision==='no'?'active-no':''}" onclick="setDecision('${topic.id}','no')">Nie</button>`;
   html += '</div>';
 
   html += `
   <div class="notes-area">
-    <textarea id="notes-${topic.id}" placeholder="Uwagi, angle, pomysł..." oninput="saveNote('${topic.id}', this.value)">${d.notes || ''}</textarea>
+    <textarea id="notes-${topic.id}" placeholder="Uwagi, angle, pomys\u0142..." oninput="saveNote('${topic.id}', this.value)">${d.notes || ''}</textarea>
   </div>`;
 
   html += '</div>';
@@ -317,14 +429,15 @@ function restoreState() {
 function updateStatus() {
   const selected = Object.values(decisions).filter(d => d.decision === 'yes' || d.decision === 'opener').length;
   const opener = Object.values(decisions).filter(d => d.decision === 'opener').length;
-  document.getElementById('statusCount').textContent = `${selected} tematów wybranych` + (opener ? ` (${opener} opener)` : '');
+  document.getElementById('statusCount').textContent = `${selected} temat\u00f3w wybranych` + (opener ? ` (${opener} opener)` : '');
 }
 
 function submitDecisions() {
+  const brief = dashboardHistory[currentBriefIdx];
   window._generalNotes = document.getElementById('generalNotes')?.value || '';
 
   const output = {
-    date: briefData.date,
+    date: brief.date,
     submitted_at: new Date().toISOString(),
     topics: [],
     general_notes: window._generalNotes,
@@ -333,22 +446,15 @@ function submitDecisions() {
     rejected: []
   };
 
-  const allTopics = [...briefData.popularne_trendy, ...briefData.discovery, ...briefData.bonusy];
+  const allTopics = [...brief.popularne_trendy, ...brief.discovery, ...brief.bonusy];
   allTopics.forEach(t => {
     const d = decisions[t.id] || {};
-    const entry = {
-      id: t.id,
-      title: t.title,
-      decision: d.decision || 'undecided',
-      notes: d.notes || ''
-    };
-    output.topics.push(entry);
+    output.topics.push({ id: t.id, title: t.title, decision: d.decision || 'undecided', notes: d.notes || '' });
     if (d.decision === 'opener') { output.opener = t.id; output.selected.push(t.id); }
     else if (d.decision === 'yes') { output.selected.push(t.id); }
     else if (d.decision === 'no') { output.rejected.push(t.id); }
   });
 
-  // Download as file for Cowork ingestion
   const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -357,7 +463,6 @@ function submitDecisions() {
   a.click();
   URL.revokeObjectURL(url);
 
-  // Show confirmation
   const banner = document.getElementById('successBanner');
   banner.style.display = 'block';
   setTimeout(() => { banner.style.display = 'none'; }, 4000);
@@ -367,6 +472,7 @@ document.addEventListener('input', (e) => {
   if (e.target.id === 'generalNotes') window._generalNotes = e.target.value;
 });
 
+renderSidebar();
 render();
 </script>
 </body>
