@@ -1,0 +1,17 @@
+# Large files
+*.pdf
+*.zip
+node_modules/
+
+# Temp files
+ziJCR8D0
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude internal
+.claude/
+.auto-memory/
+.remote-plugins/

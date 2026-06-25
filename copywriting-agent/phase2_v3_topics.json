@@ -1,0 +1,531 @@
+[
+  {
+    "type": "OPENER",
+    "id": "pt-2",
+    "title": "Kaczyński vs Morawiecki — PiS pęka na żywo",
+    "angle": "Komedia władzy + strategia Morawieckiego",
+    "thesis": "Morawiecki gra długą grę: Rozwój Plus to nie bunt — to pozycjonowanie się na moment, kiedy Kaczyński odejdzie lub przegra. Sondaże dają mu 18,8% jako osobnej partii. Im bliżej wyborów, tym bliżej momentu prawdy: przejąć PiS albo wyjść z własnym projektem.",
+    "narrativeTensions": {
+      "prawicaVsLewica": "Prawica mówi: 'PiS musi się zreformować'. Lewica mówi: 'to naturalna śmierć partii jednego lidera'. Daylik łączy: obie strony mają rację — i właśnie TO jest problem PiS — nawet ich wyborcy wiedzą, że coś jest nie tak.",
+      "libkiVsReszta": "Libki twierdzą, że walka Morawiecki-Kaczyński jest o władzę, nie o idee. Daylik twist: a co jeśli właśnie BEZ idei Morawiecki wygrywa? Bo sondaże mówią 18,8% — a on nie ma jeszcze programu.",
+      "lukaDaylik": "Phase 1 luka: 'kompromis to de facto kapitulacja Morawieckiego'. Bobby's luka: 'Morawiecki giba się, żeby bliżej wyborów przejąć PiS lub wyjść z własnym projektem'. Daylik konfrontuje: to NIE jest kapitulacja — to taktyczne wycofanie. Morawiecki nie przegrał — on kupił czas."
+    },
+    "keyFacts": [
+      "Morawiecki założył Rozwój Plus — ok. 40 parlamentarzystów PiS dołączyło",
+      "Kaczyński 17 kwietnia: 'Kto się angażuje w stowarzyszenie — nie będzie na listach PiS'",
+      "7-godzinne spotkanie 20 kwietnia — 'kompromis': Rozwój Plus przeniesiony do Rady Eksperckiej wewnątrz partii",
+      "NOWE: Sondaż — partia Morawieckiego mogłaby zdobyć 18,8% poparcia (badanie na zlecenie partii)",
+      "NOWE: Sondaż CBOS — 6% deklaruje głos, ale 60% to wyborcy PiS → połowa elektoratu PiS gotowa odejść z Morawieckim",
+      "NOWE: Rp.pl — Morawiecki może stać się 'kingmakerem' — bez niego stabilny rząd prawicy niemożliwy",
+      "4 frakcje PiS: harcerze Morawieckiego, maślarze (Czarnek/Jaki/Sasin), ziobryści, zakon PC",
+      "Szczucki 12h po 'kompromisie': 'Stowarzyszenie będzie działać i ma zadania do wykonania'",
+      "Kontekst: Orbán właśnie przegrał po 16 latach — PiS widzi koniec partii jednego człowieka"
+    ],
+    "sources": [
+      {
+        "label": "Prawica — nczas.info",
+        "url": "https://nczas.info/2026/04/20/rozlam-w-pis-coraz-blizej-morawiecki-mowi-o-turbulencjach/"
+      },
+      {
+        "label": "Lewica — Polsat News",
+        "url": "https://www.polsatnews.pl/wiadomosc/2026-04-19/konflikt-kaczynskiego-z-morawieckim-zaszkodzi-pis-owi-ma-naprawde-duzy-problem/"
+      },
+      {
+        "label": "Libki — Rzeczpospolita",
+        "url": "https://www.rp.pl/polityka/art44196891-siedem-godzin-rozmow-kaczynski-morawiecki-pis-bedzie-mial-dwa-pluca"
+      },
+      {
+        "label": "Luka — Res Futura",
+        "url": "https://resfutura.pl/algorytm-rozpadu/"
+      },
+      {
+        "label": "Sondaż 18,8% — Wszystko co najważniejsze",
+        "url": "https://wszystkoconajwazniejsze.pl/pepites/rozwoj-plus-stowarzyszenie-mateusza-morawieckiego/"
+      },
+      {
+        "label": "Sondaż CBOS — Interia",
+        "url": "https://wydarzenia.interia.pl/kraj/news-na-ile-liczyc-by-mogla-potencjalna-partia-morawieckiego-poja,nId,23421227"
+      },
+      {
+        "label": "Kingmaker — Rp.pl",
+        "url": "https://www.rp.pl/polityka/art44195131-jak-wygladalby-sejm-gdyby-doszlo-do-rozlamu-w-pis-partia-morawieckiego-powyzej-progu"
+      },
+      {
+        "label": "Gazeta Prawna — kulisy walki",
+        "url": "https://www.gazetaprawna.pl/wiadomosci/kraj/artykuly/11237589,rozlam-w-pis-morawiecki-stowarzyszenie-kaczynski-listy-wyborcze.html"
+      }
+    ],
+    "clipSuggestions": "Zdjęcie Bielana 'kto się czubi', Kaczyński 'nie będzie na listach', Morawiecki o 'turbulencjach', sondaż 18,8%, memy o terapii par, archiwalne 'PiS jest zjednoczone', Szczucki podważa kompromis",
+    "beats": [
+      {
+        "beat": "INTRO",
+        "content": "Prawo i Sprawiedliwość. Jedna partia. Jeden prezes. Jeden program. Tak brzmiało to przez 20 lat. A potem Morawiecki założył stowarzyszenie Rozwój Plus. W partii Kaczyńskiego. Pod nosem Kaczyńskiego. Z ludźmi Kaczyńskiego. I nagle okazało się, że 40 parlamentarzystów poszło za nim.",
+        "cue": "[CLIP: Morawiecki o 'turbulencjach']"
+      },
+      {
+        "beat": "ESKALACJA",
+        "content": "I tu dochodzimy do liczb, które tłumaczą WSZYSTKO. Sondaże mówią: partia Morawieckiego — jako osobny byt — mogłaby zdobyć nawet 18,8% poparcia. Osiemnaście procent. Bez programu. Bez kampanii. Samo nazwisko. A sondaż CBOS dodaje: 60% tych wyborców to obecni wyborcy PiS. Innymi słowy: co drugi wyborca PiS gotowy jest odejść za Morawieckim. Kaczyński to wie — dlatego rzucił ultimatum: 'kto się angażuje — nie będzie na naszych listach'.",
+        "cue": "Dane sondażowe + ultimatum"
+      },
+      {
+        "beat": "ABSURD",
+        "content": "Więc się spotkali. Na SIEDEM godzin. I osiągnęli 'kompromis': Rozwój Plus zostanie przeniesiony do... Rady Eksperckiej wewnątrz partii. Co to znaczy? Nic. Dosłownie nic. A Bielan wrzucił zdjęcie z podpisem: 'Kto się czubi, ten się lubi.' Bo w PiS nawet PR rozłamu robią jak memiarze.",
+        "cue": "Analiza 'kompromisu' + mem Bielana"
+      },
+      {
+        "beat": "PUNCHLINE 1",
+        "content": "I teraz: prawica mówi — 'PiS musi się zreformować'. Lewica mówi — 'to śmierć partii jednego lidera'. Libki mówią — 'ta walka jest o władzę, nie o idee'. A ja mówię: WSZYSCY mają rację. I WŁAŚNIE TO jest problem PiS. Kiedy nawet twoi wrogowie trafnie diagnozują twoją chorobę — to już nie jest choroba. To nekrolog.",
+        "cue": "Konfrontacja narracji"
+      },
+      {
+        "beat": "PUNCHLINE 2",
+        "content": "Ale Morawiecki nie jest głupi. On nie buntuje się TERAZ. On kupuje czas. 12 godzin po 'kompromisie' Szczucki — jego człowiek — mówi publicznie: 'Stowarzyszenie będzie działać.' Czyli kompromis trwał krócej niż sosłuchawki w zeszytach. Analitycy z Rzeczpospolitej piszą wprost: Morawiecki może stać się 'kingmakerem' — bez niego stabilny rząd prawicy będzie niemożliwy.",
+        "cue": "Strategia długoterminowa + kingmaker"
+      },
+      {
+        "beat": "PUNCHLINE 3",
+        "content": "I to się dzieje w tygodniu, kiedy Orbán przegrał po 16 latach. Fidesz — jedna partia, jeden lider — dostał 55 mandatów na 199. PiS nie ma kontroli nad mediami. Nie ma kontroli nad sądami. Nie ma kontroli nad WŁASNĄ partią. Ale ma 18,8% stowarzyszenia, które oficjalnie 'nie istnieje'.",
+        "cue": "Callback do Orbána + twist"
+      },
+      {
+        "beat": "FINISZ",
+        "content": "Kaczyński powiedział: 'trzeba wybrać'. Morawiecki powiedział: 'turbulencje'. Turbulencje są, kiedy samolot leci. PiS nie leci — PiS spada. A Morawiecki ma spakowany spadochron i 18,8% powodów, żeby go otworzyć.",
+        "cue": "[PAUSE FOR LAUGH] zamknięcie z metaforą + danymi"
+      }
+    ]
+  },
+  {
+    "type": "OPENER",
+    "id": "pt-1",
+    "title": "Orbán przegrał wybory — koniec ery i lekcja dla polskiej prawicy",
+    "angle": "Ironia historyczna + lekcja o mediach i mobilizacji",
+    "thesis": "Człowiek, który kontrolował media, sądy, ordynację i konstytucję — przegrał z kretesem z gościem, który odwiedził 700 miast i wygrał kampanię na ziemi i na TikToku. Fidesz wydał miliony na telewizję i dezinformację AI — TISZA miała 50 tysięcy wolontariuszy. I to nie jest wiadomość o Węgrzech — to jest ostrzeżenie dla polskiej prawicy.",
+    "narrativeTensions": {
+      "prawicaVsLewica": "Prawica: 'Orbán oderwał się od ludzi'. Lewica: 'autorytaryzm przegrywa z mobilizacją obywatelską'. Daylik twist: OBE strony pomijają najważniejsze — Orbán przegrał nie dlatego że był zły. Przegrał bo myślał, że kontrola mediów = kontrola wyborców. W 2026 roku to już nie działa.",
+      "libkiVsReszta": "Libki: 'instytucje się mszczą — manipulacja ordynacją odbiła się bumerangiem'. Daylik dodaje: tak, ale nie instytucje wygrały — wygrał ground game. 700 miast, 50 tys. wolontariuszy. To nie jest triumf systemu — to triumf ludzi na ulicy.",
+      "lukaDaylik": "Phase 1 luka: 'nikt nie mówi że TISZA wygrała na TikToku — stare media bezużyteczne'. Web search dodaje: TISZA odwiedziła 700 miast, wygrała w 81% odwiedzonych gmin, rosyjska dezinformacja + Fidesz AI content przegrały z organiczną mobilizacją."
+    },
+    "keyFacts": [
+      "TISZA: 138 mandatów ze 199 — większość konstytucyjna (2/3). Fidesz: 55 mandatów",
+      "TISZA: 53,6% głosów. Fidesz: 37,8%. Frekwencja rekordowa: ponad 78%",
+      "NOWE: TISZA odwiedziła 700 miast i wsi — wygrała w 81% odwiedzonych gmin (305 z 375)",
+      "NOWE: 50 tysięcy wolontariuszy — Magyar podziękował im w pierwszym przemówieniu",
+      "NOWE: Młode TikTokerki mobilizowały wyborców — aktywistka z celem 'zastąpić Fidesz' zaczęła w grudniu 2024",
+      "NOWE: Fidesz był największym twórcą treści AI w kampanii — i przegrał. Rosyjska dezinformacja (Storm-1516) też nie pomogła",
+      "Orbán rządził 16 lat. Kontrolował media, sądy, ordynację i konstytucję",
+      "Magyar może teraz odwrócić zmiany konstytucyjne Orbána — dzięki 2/3"
+    ],
+    "sources": [
+      {
+        "label": "Prawica — nczas.info",
+        "url": "https://nczas.info/2026/04/20/rozlam-w-pis-coraz-blizej-morawiecki-mowi-o-turbulencjach/"
+      },
+      {
+        "label": "Lewica — OKO.press",
+        "url": "https://oko.press/magyar-i-tisza-wygrywaja-wybory-na-wegrzech-oto-6-przyczyn-upadku-systemu-orbana"
+      },
+      {
+        "label": "Libki — Tygodnik Powszechny",
+        "url": "https://www.tygodnikpowszechny.pl/kleska-orbana-wladza-ktora-manipuluje-regulami-sama-wpada-w-pulapke-193361"
+      },
+      {
+        "label": "Luka — Polityka",
+        "url": "https://www.polityka.pl/tygodnikpolityka/swiat/2338933,1,wybory-na-wegrzech-schodza-kolejne-wyniki-wielki-sukces-tiszy-kleska-orbna-bedziemy-w-opozycji.read"
+      },
+      {
+        "label": "TISZA kampania — Interia",
+        "url": "https://wydarzenia.interia.pl/zagranica/news-kazdy-okreg-mial-swoj-kolor-szef-kampanii-tiszy-zdradza-jak,nId,23330894"
+      },
+      {
+        "label": "AI dezinformacja — Defense One",
+        "url": "https://www.defenseone.com/threats/2026/04/orbans-loss-wont-stop-russian-influence-campaigns-it-shows-theyre-beatable/412849/"
+      },
+      {
+        "label": "CNN — Orbán propaganda machine",
+        "url": "https://www.cnn.com/2026/04/19/europe/orban-propaganda-media-magyar-hungary-intl"
+      },
+      {
+        "label": "Al Jazeera — wyniki",
+        "url": "https://www.aljazeera.com/news/2026/4/12/hungary-election-early-results-show-magyars-tisza-ahead-of-orbans-fidesz"
+      }
+    ],
+    "clipSuggestions": "Orbán 'będziemy w opozycji', Magyar świętuje z tłumem, TikToki kampanijne TISZY, mapa 700 odwiedzonych miast, archiwalne Orbán 'nikt nas nie pokona', polskie memy",
+    "beats": [
+      {
+        "beat": "INTRO",
+        "content": "Viktor Orbán. 16 lat u władzy. Kontrolował telewizję, sądy, ordynację wyborczą i konstytucję. Zbudował system, w którym opozycja teoretycznie nie mogła wygrać. I w niedzielę — opozycja wygrała. Nie ledwo. Z KRETESEM.",
+        "cue": "[CLIP: Orbán 'będziemy w opozycji']"
+      },
+      {
+        "beat": "ESKALACJA",
+        "content": "TISZA: 138 mandatów na 199. Fidesz: 55. Frekwencja: 78 procent — rekord w historii Węgier. Ale tu jest klucz, który tłumaczy WSZYSTKO: Magyar i TISZA odwiedzili 700 miast i wsi w ciągu dwóch lat. Siedemset. I wygrali w 81 procentach z nich. Fidesz miał telewizję — TISZA miała autobus i 50 tysięcy wolontariuszy.",
+        "cue": "Skala klęski + ground game"
+      },
+      {
+        "beat": "ABSURD",
+        "content": "I tu jest najpiękniejsze: Fidesz był NAJWIĘKSZYM twórcą treści generowanych przez AI w całej kampanii. Rosyjskie boty z grupy Storm-1516 produkowały dezinformację o Magyarze od stycznia. Orbán wydał miliony na propagandę. A przegrał z gościem, który OSOBIŚCIE jeździł po wsiach i rozmawiał z ludźmi. W 2026 roku sztuczna inteligencja przegrała z inteligencją naturalną.",
+        "cue": "AI vs ground game — ironia"
+      },
+      {
+        "beat": "PUNCHLINE 1",
+        "content": "I teraz spójrzmy na to z polskiej perspektywy. Prawica mówi: 'Orbán oderwał się od ludzi'. Zgoda. Lewica mówi: 'autorytaryzm przegrywa z mobilizacją'. Zgoda. Ale OBIE strony pomijają najważniejsze: Orbán nie przegrał dlatego że był zły. Przegrał bo myślał, że kontrola mediów równa się kontrola wyborców. W 2026 roku to już nie działa. I Kaczyński powinien się bać — bo on nie kontroluje nawet telewizji. Nie kontroluje sądów. Nie kontroluje nawet własnej partii.",
+        "cue": "Callback do openera 1 + konfrontacja narracji"
+      },
+      {
+        "beat": "PUNCHLINE 2",
+        "content": "Lekcja z Węgier: TikTokerka, która w grudniu 2024 założyła konto z jednym celem — 'zastąpić Fidesz' — pomogła zmobilizować pokolenie, które nigdy wcześniej nie głosowało. Fidesz miał telewizję. A telewizję oglądają ludzie, którzy i tak już głosują na Fidesz. Rewolucja przyszła z aplikacji, którą politycy uważają za zabawkę.",
+        "cue": "TikTok detail + twist"
+      },
+      {
+        "beat": "FINISZ",
+        "content": "Viktor Orbán rządził 16 lat, wydał miliardy na propagandę, zatrudnił rosyjskie boty i sztuczną inteligencję. A pokonał go facet z autobusem i 50 tysięcy wolontariuszy. Może pora, żeby polscy politycy zaczęli się bać nie opozycji — ale ludzi, którzy postanowili wstać z kanapy.",
+        "cue": "[PAUSE FOR LAUGH] zamknięcie z twist — ludzie > algorytm > propaganda"
+      }
+    ]
+  },
+  {
+    "type": "SEGMENT",
+    "id": "disc-1",
+    "title": "Afera Zondacrypto — 350 mln zł wyparowało, a Nawrocki wetuje ustawę",
+    "angle": "Beka + równoważenie obu stron + lekcja dla spekulantów",
+    "thesis": "Zonda okradła 30 tysięcy wyborców Konfederacji, Nawrockiego i PiS-u. Polscy politycy nie mają za grosz pojęcia o krypto — jedni sponsorowani przez gangusów, drudzy chcą zamordyzmem zatrzymać sektor na korzyść banksterów. I jest twist: Nawrocki właśnie sygnalizuje, że podpisze NOWĄ ustawę od Polski 2050.",
+    "narrativeTensions": {
+      "prawicaVsLewica": "Prawica: 'Nawrocki bronił innowacji przed nadregulacją'. Lewica: 'weto to ochrona interesów polityków powiązanych z Zondą'. Daylik BEKA: obie strony mają motyw finansowy. Prawica brała kasę od Zondy (fundacja Dobry Rząd, CPAC). Lewica chce regulacji, które dadzą monopol bankom. Żadna opcja nie jest uczciwa.",
+      "libkiVsReszta": "Libki: 'MiCA jest konieczna — Polska jedynym krajem UE bez nadzoru'. Daylik dodaje: tak, ale nadzór powinien chronić LUDZI, nie dawać monopol instytucjom. Pytanie nie brzmi 'czy regulować' — pytanie brzmi 'KTO na tym zarobi'.",
+      "lukaDaylik": "Phase 1 luka: 'Dlaczego Sejm nie zebrał 3/5 do odrzucenia weta? 243 za, potrzebne 276 — ktoś z koalicji nie głosował.' NOWE z web search: Nawrocki sygnalizuje gotowość podpisania NOWEJ ustawy od Polski 2050. Plus: Suszek prawdopodobnie uprowadzony, prokuratura w Katowicach — straty rosną ponad 350 mln."
+    },
+    "keyFacts": [
+      "Zondacrypto: rezerwy BTC spadły o 99,7% — z 55 BTC do 0,18 BTC",
+      "NOWE: Suszek (założyciel BitBay→Zondacrypto) prawdopodobnie uprowadzony — jego los nieznany od 2022",
+      "NOWE: W ciągu 4 miesięcy wyprowadzono środki o wartości ponad 21 mln USD w 30 kryptowalutach",
+      "Fundacja 'Dobry Rząd' przyjęła 70 tys. euro od prezesa Zondacrypto — w fundacji: Wipler + ludzie Ziobry",
+      "NOWE: Zondacrypto była głównym sponsorem CPAC — imprezy prawicowej w trakcie kampanii prezydenckiej",
+      "Nawrocki dwukrotnie zawetował MiCA — pierwszy raz grudzień 2025, drugi luty 2026",
+      "Sejm: 243 za odrzuceniem weta, potrzebne 276 — ktoś z koalicji NIE głosował",
+      "NOWE: Nawrocki sygnalizuje gotowość podpisania NOWEJ ustawy krypto od Polski 2050",
+      "Nawrocki: 'nie żałowałem ani przez sekundę'",
+      "Bezpieczne giełdy: Coinbase, Bitstamp, Kraken, BitPanda"
+    ],
+    "sources": [
+      {
+        "label": "Prawica — Polsat News (weto)",
+        "url": "https://www.polsatnews.pl/wiadomosc/2026-04-17/glosne-weto-prezydenta-nie-zalowalem-ani-przez-sekunde/"
+      },
+      {
+        "label": "Lewica — OKO.press",
+        "url": "https://oko.press/zondacrypto-co-poslowie-musza-wiedziec-przed-kluczowym-glosowaniem"
+      },
+      {
+        "label": "Libki — Bankier.pl",
+        "url": "https://www.bankier.pl/wiadomosc/Kryptowaluty-weto-Nawrockiego-i-Zondacrypto-Kto-nie-mowi-prawdy-9111165.html"
+      },
+      {
+        "label": "Luka — Money.pl",
+        "url": "https://www.money.pl/gospodarka/afera-zondacrypto-narasta-spor-rzadu-z-prezydentem-7276595105138976a.html"
+      },
+      {
+        "label": "Fundacja Dobry Rząd — Money.pl",
+        "url": "https://www.money.pl/biznes/wipler-i-ludzie-zwiazani-z-ziobra-oto-fundacja-ktora-miala-wziac-pieniadze-od-prezesa-zondy-7273135118006464a.html"
+      },
+      {
+        "label": "CPAC + Tusk — Bankier.pl",
+        "url": "https://www.bankier.pl/wiadomosc/Afera-Zondacrypto-fundacje-Ziobry-i-Wiplera-oraz-CPAC-Premier-uderza-w-prawice-9110639.html"
+      },
+      {
+        "label": "Nowa ustawa P2050 — Polsat News",
+        "url": "https://www.polsatnews.pl/wiadomosc/2026-04-23/pn-nieoficjalnie-ustawa-polski-2050-o-kryptowalutach-jest-do-zaakceptowania-przez-prezydenta/"
+      },
+      {
+        "label": "Prokuratura — WP",
+        "url": "https://wiadomosci.wp.pl/o-co-chodzi-w-aferze-zondacrypto-porzadkujemy-fakty-7278356271757728a"
+      },
+      {
+        "label": "VIDEO: Macron żart o Sewerynie",
+        "url": "https://x.com/wkrawcz1/status/2046732643706786036"
+      }
+    ],
+    "clipSuggestions": "Nawrocki o wecie, screeny rezerw BTC 55→0,18, CPAC z logiem Zondy, fundacja Dobry Rząd dokumenty, loga bezpiecznych giełd, Nawrocki 'nie żałowałem', nowa ustawa Polski 2050",
+    "beats": [
+      {
+        "beat": "INTRO",
+        "content": "Zondacrypto. Polska giełda kryptowalut. Założyciel zebrał 350 milionów złotych od 30 tysięcy ludzi. A potem... zniknął. Ale nie tak jak myślicie — nie uciekł na Bahamy. Prokuratura mówi: prawdopodobnie został UPROWADZONY. Los nieznany od 2022 roku. A w tym czasie ktoś wyprowadził z giełdy 21 milionów dolarów w 30 różnych kryptowalutach. Rezerwy Bitcoinów: z 55 do 0,18 BTC. Spadek o 99,7%.",
+        "cue": "[GRAPHIC: wykres rezerw BTC 55→0,18 + '21 mln USD gone']"
+      },
+      {
+        "beat": "ESKALACJA",
+        "content": "I teraz najlepsze: wiecie kto brał kasę od Zondy? Fundacja 'Dobry Rząd' — 70 tysięcy euro od prezesa Zondacrypto. Kto siedzi w tej fundacji? Poseł Wipler z Konfederacji i ludzie powiązani z Ziobrą. A Zondacrypto było głównym sponsorem CPAC — prawicowej imprezy w trakcie kampanii prezydenckiej. Czyli: giełda, która kradła pieniądze ludziom, jednocześnie SPONSOROWAŁA polityków, którzy mieli tych ludzi chronić.",
+        "cue": "Powiązania + CPAC sponsor"
+      },
+      {
+        "beat": "ABSURD",
+        "content": "A potem Nawrocki — DWA RAZY — zawetował ustawę o kryptoaktywach. Grudzień 2025. Luty 2026. Sejm próbował odrzucić weto: 243 za, potrzebne 276. Nie udało się — bo KTOŚ z koalicji rządowej nie głosował. Kto? Nie wiemy. Ale wiemy, że Polska jest jedynym krajem UE bez regulacji krypto. Jedynym. Bo nasz prezydent uważa, że ochrona 30 tysięcy okradzionych ludzi to 'nadregulacja'.",
+        "cue": "Podwójne weto + brakujące głosy"
+      },
+      {
+        "beat": "PUNCHLINE 1",
+        "content": "I tu Daylik mówi coś, czego nie usłyszycie ani na prawicy, ani na lewicy: OBIE strony kłamią. Prawica mówi: 'broniliśmy innowacji'. Gówno prawda — broniliście sponsora, który fundował wam CPAC. Lewica mówi: 'regulacje ochronią ludzi'. Gówno prawda — wasze regulacje dadzą monopol bankom, które pobierają 3% od każdego przelewu. Polscy politycy nie mają za grosz pojęcia o krypto — jedni sponsorowani przez gangusów, drudzy zamordyzmem chronią banksterów.",
+        "cue": "Konfrontacja OBIE strony kłamią"
+      },
+      {
+        "beat": "PUNCHLINE 2",
+        "content": "I jest twist: Nawrocki właśnie zasugerował, że PODPISZE nową ustawę krypto — ale tę od Polski 2050, nie od rządu. Czyli ten sam prezydent, który wetował ochronę inwestorów, teraz chce się podpisać pod cudzym projektem, żeby wyjść z twarzą. Więc drodzy Polacy — jeśli chcecie bawić się w spekulacje krypto, to na własne ryzyko to robicie. Ale przynajmniej róbcie to na giełdach z regulacjami: Coinbase, Bitstamp, Kraken, BitPanda. Nie na polskim no-name.",
+        "cue": "[GRAPHIC: loga bezpiecznych giełd + twist Nawrockiego]"
+      },
+      {
+        "beat": "FINISZ",
+        "content": "Widzicie, drodzy zonda-spekulanci, jak was Konfederacja, Nawrocki, PiS i Konfa wydymali? Niech idą się pomodlić na Jasną Górę w orszaku Lechii Gdańsk i Jagiellonii Białystok za zwrot shitcoinsów w formie manny z nieba. Bo na ziemi już nikt im tych pieniędzy nie zwróci. A Nawrocki 'nie żałował ani przez sekundę'. Ani jednej.",
+        "cue": "[PAUSE FOR LAUGH] beka finałowa + callback 'nie żałowałem'"
+      }
+    ]
+  },
+  {
+    "type": "SEGMENT",
+    "id": "disc-3",
+    "title": "Macron w Gdańsku — żart o Sewerynie, parasol nuklearny i porównanie z Dudą",
+    "angle": "Klasa vs brak klasy + geopolityka + kontrast narracji",
+    "thesis": "Macron przyjechał do Gdańska, rozbawił wszystkich mistrzowskim żartem o Sewerynie, podpisał współpracę nuklearną — a Polska przypomniała sobie, jaka jest różnica między prezydentem z klasą a prezydentem z dowcipem o ludożercach. I jest geopolityczny twist: prawica mówi 'prawdziwe bezpieczeństwo to USA, nie Macron' — a Daylik pyta: a CO jeśli USA nie odbiera telefonu?",
+    "narrativeTensions": {
+      "prawicaVsLewica": "Prawica: 'Tusk gra pod Brukselę i Paryż — prawdziwe bezpieczeństwo to relacje z USA'. Lewica: 'Europa musi wziąć obronność w swoje ręce'. Daylik konfrontuje: prawica NIE MOŻE powiedzieć 'USA, USA' w tygodniu gdy Trump mówi 'radzcie sobie'. A lewica nie może udawać, że Europa nagle jest gotowa — bo nie jest.",
+      "libkiVsReszta": "Libki: 'wspólne odstraszanie nuklearne to historyczny moment'. Daylik dodaje kontekst: to nie jest triumf — to przyznanie się do porażki transatlantyckiej. Europa zbroi się bo MUSI, nie bo chce.",
+      "lukaDaylik": "Phase 1 luka: 'nikt nie mówi, że to de facto przyznanie: USA nie obronią Europy'. NOWE: Macron zwiększa arsenał nuklearny — po raz pierwszy od 1992. 8 krajów w programie. Francja nie dzieli się decyzją o użyciu broni — ale dzieli się wiedzą."
+    },
+    "keyFacts": [
+      "Macron w ECS wręczył Andrzejowi Sewerynowi Nagrodę im. Geremka",
+      "NOWE: Dokładny żart Macrona: 'We Francji akceptujemy te polskie prowokacje, że jakoby Polacy to Marie Curie i Chopin. Więc zaakceptujemy też, że Andrzej Seweryn jest Polakiem.' — owacja na sali, Seweryn rozbawiony",
+      "NOWE: Seweryn skomentował: 'Znam swoje miejsce w szeregu' — żart viral w sieci",
+      "Seweryn spędził 33 lata w Comédie-Française — legenda polsko-francuskiego teatru",
+      "NOWE: Duda na 100-leciu AGH: żart o ludożercach pożerających rektorów — media: 'rasistowski', 'żenujący'",
+      "8 krajów w programie odstraszania: BE, DK, GR, NL, DE, PL, SE, UK",
+      "NOWE: Macron zwiększa arsenał nuklearny — po raz pierwszy od 1992. Decyzja o użyciu broni zostaje wyłącznie przy prezydencie Francji",
+      "Wspólne ćwiczenia nuklearne PL-FR — wymiana informacji, planowanie, symulacje",
+      "Kreml: 'To potwierdza militaryzację UE'"
+    ],
+    "sources": [
+      {
+        "label": "Prawica — WP",
+        "url": "https://wiadomosci.wp.pl/macron-i-tusk-z-apelem-do-usa-padly-mocne-slowa-ws-trumpa-7277369115325505v"
+      },
+      {
+        "label": "Lewica — naTemat",
+        "url": "https://natemat.pl/650065,macron-z-tuskiem-nie-tylko-rozmawiali-czas-na-sojusz-ktory-siegnie-gwiazd"
+      },
+      {
+        "label": "Libki — Euronews",
+        "url": "https://www.euronews.com/my-europe/2026/04/20/france-and-poland-discuss-boosted-defence-ties-as-us-commitment-to-europe-wavers"
+      },
+      {
+        "label": "Luka — EADaily",
+        "url": "https://eadaily.com/en/news/2026/04/17/poland-and-france-want-to-stretch-the-nato-pipeline-closer-to-russia"
+      },
+      {
+        "label": "Nagroda Geremka — gdansk.pl",
+        "url": "https://www.gdansk.pl/wiadomosci/Andrzej-Seweryn-laureatem-nagrody-Geremka-Wreczali-Tusk-i-Macron,a,308797"
+      },
+      {
+        "label": "Żart Macrona — RMF24",
+        "url": "https://www.rmf24.pl/fakty/polska/news-macron-rozbawil-wszystkich-zartem-o-sewerynie-zobacz-co-powi,nId,8078477"
+      },
+      {
+        "label": "Parasol nuklearny — Defence24",
+        "url": "https://defence24.pl/geopolityka/francuski-parasol-nuklearny-dla-polski"
+      },
+      {
+        "label": "Dowcip Dudy AGH — OKO.press",
+        "url": "https://oko.press/prezydent-duda-rozpoczyna-kampanie-rasistowskim-dowcipem"
+      },
+      {
+        "label": "VIDEO: Żart Macrona (X/Twitter)",
+        "url": "https://x.com/wkrawcz1/status/2046732643706786036"
+      },
+      {
+        "label": "VIDEO: Dowcip Dudy o AGH",
+        "url": "https://www.youtube.com/watch?v=BuXQZBd7bHM"
+      }
+    ],
+    "clipSuggestions": "Żart Macrona o Sewerynie (X/Twitter), dowcip Dudy o AGH (YouTube), Seweryn 'znam swoje miejsce w szeregu', Tusk-Macron konferencja, Pieskow reaguje",
+    "beats": [
+      {
+        "beat": "INTRO",
+        "content": "Macron przyjechał do Gdańska. I zrobił coś, czego Polska nie widziała od lat: prezydent wielkomocarstwowy powiedział żart, który był NAPRAWDĘ śmieszny. Na gali Nagrody im. Geremka dla Andrzeja Seweryna Macron powiedział: 'We Francji akceptujemy te polskie prowokacje, że jakoby Polacy to Marie Curie i Chopin. Więc zaakceptujemy też, że Seweryn jest Polakiem.' Sala wstała. Seweryn się śmiał. Internet eksplodował.",
+        "cue": "[CLIP: żart Macrona — pełen]"
+      },
+      {
+        "beat": "ESKALACJA",
+        "content": "Seweryn spędził 33 lata w Comédie-Française — to jest jak grać w reprezentacji Francji w teatrze. I Macron — z uśmiechem, z klasą, z równowagą — oddaje hołd człowiekowi, który łączy dwa kraje. Seweryn potem skomentował: 'Znam swoje miejsce w szeregu.' Dowcip jest elegancki, mądry i ciepły. Tak wygląda dyplomacja z ludzką twarzą.",
+        "cue": "Kontekst Seweryna + reakcja"
+      },
+      {
+        "beat": "ABSURD",
+        "content": "A teraz dla porównania: pamiętacie dowcip Dudy? Na 100-leciu AGH w Krakowie? Żart o ludożercach z Afryki, którzy pożerają rektorów. Media napisały: 'rasistowski', 'żenujący', 'gorsze niż mądrości Komorowskiego'. Gowin bronił: 'to wewnętrzny żart AGH'. A różnica jest prosta: Macron żartuje i cała sala śmieje się Z NIM. Duda żartuje i cała Polska śmieje się Z NIEGO.",
+        "cue": "[CLIP: dowcip Dudy o AGH] + kontrast klasy"
+      },
+      {
+        "beat": "PUNCHLINE 1",
+        "content": "Ale Macron nie przyjechał tylko żartować. Ogłosił, że Polska dołącza do francuskiego programu odstraszania nuklearnego. Osiem krajów. I tu prawica mówi: 'prawdziwe bezpieczeństwo to relacje z USA, nie Macron'. Dobrze. Ale pytanie do prawicy: a CO jeśli USA nie odbiera telefonu? Bo to się właśnie dzieje. Francja zwiększa arsenał nuklearny po raz pierwszy od 1992 — nie dlatego że chce. Dlatego że MUSI.",
+        "cue": "Zwrot do geopolityki + konfrontacja prawicy"
+      },
+      {
+        "beat": "PUNCHLINE 2",
+        "content": "Kreml natychmiast zareagował: 'to militaryzacja UE!' Czyli Rosja: atakuje Ukrainę, grozi Europie bronią jądrową co drugi wtorek, a kiedy Europa mówi 'może się przygotujemy' — Rosja: 'jak śmiecie!' I jest szczegół: Macron nie dzieli się z nikim DECYZJĄ o użyciu broni nuklearnej. Dzieli się wiedzą. Planowaniem. Symulacjami. Bo sam guzik zostaje w Paryżu. To jest jak dać komuś mapę do schronu, ale nie klucz.",
+        "cue": "Ironia Kremla + szczegół o decyzji"
+      },
+      {
+        "beat": "FINISZ",
+        "content": "Podsumujmy: Macron przyjechał, rozbawił salę żartem o Chopinie, podpisał parasol nuklearny, zwiększył arsenał atomowy i wyjechał. Duda przez 10 lat nie potrafił powiedzieć dobrego dowcipu. Może to jest prawdziwa różnica między Francją a Polską: jedni mają broń jądrową I poczucie humoru. My mamy żart o ludożercach.",
+        "cue": "[PAUSE FOR LAUGH] callback + zamknięcie z kontrastem"
+      }
+    ]
+  },
+  {
+    "type": "SEGMENT",
+    "id": "disc-5",
+    "title": "Tusk w Tokio — strategiczne partnerstwo z Japonią (i echo 1905)",
+    "angle": "Pragmatyczny zwrot + historyczna ironia + konfrontacja narracji",
+    "thesis": "Polska i Japonia podnoszą relacje do poziomu strategicznego — atom, wodór, satelity, cyberbezpieczeństwo. Prawica mówi 'Tusk szuka sojuszników bo stracił USA'. Lewica mówi 'dywersyfikacja to dojrzałość'. A Daylik pyta: a czy ktokolwiek pamięta, że Piłsudski jechał do Tokio w 1904 szukać dokładnie tego samego — sojuszu przeciw Rosji?",
+    "narrativeTensions": {
+      "prawicaVsLewica": "Prawica: 'Tusk leci do Japonii bo stracił USA — to przyznanie się do porażki'. Lewica: 'dywersyfikacja sojuszy to dojrzała polityka'. Daylik: OBA mają rację — Tusk MUSI szukać alternatyw bo USA się wycofują, ale jednocześnie to JEST dojrzała polityka. Czy coś może być porażką i mądrością jednocześnie? Tak. To się nazywa geopolityka.",
+      "libkiVsReszta": "Libki: 'atom, wodór, satelity — wreszcie konkrety, nie zdjęcia'. Daylik dodaje: 250 mld euro inwestycji w energetykę w ciągu 10 lat. Japonia ma atomówkę, która wraca do strategicznej gry. To nie jest wizyta kurtuazyjna.",
+      "lukaDaylik": "Phase 1 luka: 'Japonia ma dzietność 1,20 — mogą nauczyć czego NIE robić'. Bobby's note: '1905 wojna rosyjsko-japońska'. NOWE z web search: Piłsudski jechał do Tokio 10 czerwca 1904 z tajną misją 'Wieczór'. Proponował Japończykom legion polski, dostawy broni, wywiad. Japończycy dali pieniądze na broń. 122 lata później Tusk robi to samo — ale z atomem zamiast karabinami."
+    },
+    "keyFacts": [
+      "15 kwietnia: Tusk i premier Sanae Takaichi — 'wszechstronne partnerstwo strategiczne' (podniesienie z 2015)",
+      "Współpraca: energetyka jądrowa, wodór, amoniak, satelity (POLSA+JAXA), cyberbezpieczeństwo, AI, obronność",
+      "NOWE: Podpisano umowę o zabezpieczeniu społecznym + memorandum o rolnictwie + deklaracja POLSA-JAXA",
+      "NOWE: Polska zainwestuje 250 mld euro w energetykę w ciągu 10 lat — japoński biznes zaproszony",
+      "Pierwszy premier RP w Japonii od 6 lat",
+      "NOWE: Piłsudski w Tokio 10 czerwca 1904 — tajna misja 'Wieczór'. Proponował legion polski + wywiad. Japończycy dali pieniądze na broń w Hamburgu",
+      "NOWE: Dmowski też był w Tokio — osobno! Piłsudski i Dmowski rywalizowali o japońskie wsparcie przeciw Rosji",
+      "Japonia: dzietność 1,20 — Polska 1,13. Oba kraje wymierają",
+      "Tydzień później: Macron w Gdańsku — atom z Japonią + parasol nuklearny z Francją w jednym tygodniu"
+    ],
+    "sources": [
+      {
+        "label": "Prawica — Salon24",
+        "url": "https://www.salon24.pl/newsroom/1499187,tusk-w-tokio-polska-i-japonia-podnosza-range-relacji"
+      },
+      {
+        "label": "Lewica — Polsat News",
+        "url": "https://www.polsatnews.pl/wiadomosc/2026-04-15/polska-i-japonia-zaciesniaja-wspolprace-premier-podpisal-strategiczna-deklaracje/"
+      },
+      {
+        "label": "Libki — Gov.pl (deklaracja)",
+        "url": "https://www.gov.pl/web/premier/wspolne-oswiadczenie-premier-japonii-sanae-takaichi-oraz-premiera-rzeczypospolitej-polskiej-donalda-tuska"
+      },
+      {
+        "label": "Luka — Nowin.pl",
+        "url": "https://www.nowin.pl/2026/04/15/polska-i-japonia-podnosza-relacje-tokio-otwiera-nowy-etap-wspolpracy/"
+      },
+      {
+        "label": "Piłsudski Tokio 1904 — Interia Historia",
+        "url": "https://historia.interia.pl/drogi-do-wolnosci/news-wojna-rosyjsko-japonska-pilsudskiego-wyprawa-do-japonii,nId,2256066"
+      },
+      {
+        "label": "Piłsudski i Dmowski w Tokio — Focus",
+        "url": "https://www.focus.pl/artykul/co-roman-dmowski-i-jozef-pilsudski-robili-w-tokio"
+      },
+      {
+        "label": "Tajna misja 'Wieczór' — Muzeum Piłsudskiego",
+        "url": "https://muzeumpilsudski.pl/historie-podrozne-tajna-misja-do-tokio-najdalsza-podroz-jozefa-pilsudskiego-online/"
+      },
+      {
+        "label": "250 mld euro — Bankier.pl",
+        "url": "https://www.bankier.pl/wiadomosc/Chcemy-podzielic-sie-z-wami-tymi-pieniedzmi-Donald-Tusk-kusi-japonski-biznes-9113683.html"
+      }
+    ],
+    "clipSuggestions": "Tusk i Takaichi podpisują deklarację, grafika 250 mld euro, archiwalne zdjęcia Piłsudskiego 1904, mapa misji 'Wieczór', Dmowski vs Piłsudski w Tokio — dwie wizje tej samej podróży, porównanie demografii PL vs JP",
+    "beats": [
+      {
+        "beat": "INTRO",
+        "content": "Polska i Japonia. 9 tysięcy kilometrów. Dwie różne kultury. I od tego tygodnia — 'wszechstronne partnerstwo strategiczne'. Najwyższy poziom relacji dyplomatycznych. Tusk poleciał do Tokio jako pierwszy polski premier od sześciu lat. A prawica mówi: 'leci bo stracił USA'. Dobrze — odpowiem na to za chwilę.",
+        "cue": "[GRAPHIC: PL + JP flagi + 9000 km]"
+      },
+      {
+        "beat": "ESKALACJA",
+        "content": "O czym rozmawiali? Energetyka jądrowa — japońska atomówka wraca do gry. Wodór. Satelity kosmiczne — POLSA i JAXA razem. Cyberbezpieczeństwo. AI. Przemysł obronny. Podpisali umowę o zabezpieczeniu społecznym, memorandum o rolnictwie, deklarację kosmiczną. A Tusk powiedział wprost: Polska zainwestuje 250 miliardów euro w energetykę w ciągu 10 lat — i zaprasza japoński biznes do udziału. To nie są dyplomatyczne zdjęcia — to są konkrety za miliardy.",
+        "cue": "Lista konkretów + 250 mld"
+      },
+      {
+        "beat": "ABSURD",
+        "content": "I teraz ta piękna ironia historyczna, o której NIKT nie mówi. Wiecie, kiedy Polska i Japonia ostatnio miały wspólny interes strategiczny? W 1904 roku. Józef Piłsudski wsiadł w pociąg i pojechał do Tokio — z tajną misją o kryptonimie 'Wieczór'. Proponował Japończykom: legion polski, dostawy broni, wspólny wywiad — wszystko przeciwko Rosji. I wiecie co? Japończycy dali mu pieniądze na broń, którą odebrał w Hamburgu. 122 lata później Tusk robi dokładnie to samo — ale z atomem zamiast karabinami. Grunt to dobre fundamenty.",
+        "cue": "Piłsudski 'Wieczór' + ironia historyczna"
+      },
+      {
+        "beat": "PUNCHLINE 1",
+        "content": "I jest jeszcze pikantny szczegół: do Tokio w 1904 pojechał też Roman Dmowski. OSOBNO. Piłsudski i Dmowski — dwie wizje Polski — rywalizowali o japońskie wsparcie przeciw Rosji w tym samym mieście w tym samym czasie. W 2026 roku Tusk jedzie sam — bo opozycja nie ma polityki zagranicznej. Ma tylko 'USA, USA, USA'. A USA nie odbiera.",
+        "cue": "Dmowski twist + callback do opozycji"
+      },
+      {
+        "beat": "PUNCHLINE 2",
+        "content": "I odpowiedź na zarzut prawicy: 'Tusk leci do Japonii bo stracił USA'. Może. Ale czy to nie jest DOKŁADNIE to, co powinien robić premier, kiedy główny sojusznik się wycofuje? W ciągu jednego tygodnia Tusk był w Tokio i przyjmował Macrona w Gdańsku. Atom z Japonią, parasol nuklearny z Francją. To się nazywa 'nie trzymać wszystkich jaj w jednym koszyku'. Nawet prawica powinna to rozumieć.",
+        "cue": "Odpowiedź na zarzut + tempo tygodnia"
+      },
+      {
+        "beat": "FINISZ",
+        "content": "Przez 30 lat polska polityka zagraniczna brzmiała: 'USA, USA, USA'. Teraz brzmi: 'USA nie odbiera? Dzwonię do Paryża. I Tokio. I kto tam jeszcze ma atom.' Piłsudski w 1904 jechał do Tokio szukać sojuszu przeciw Rosji — i znalazł pieniądze na broń. Tusk w 2026 jedzie szukać atomu i satelitów. 122 lata — ta sama trasa, ta sama logika, ten sam wróg na wschodzie. Piłsudski by się uśmiechnął.",
+        "cue": "[PAUSE FOR LAUGH] callback do Piłsudskiego + zamknięcie"
+      }
+    ]
+  },
+  {
+    "type": "BONUS",
+    "id": "bonus-1",
+    "title": "Memy po klęsce Orbána — internet świętuje upadek 'niepokonanego'",
+    "angle": "Internet reaguje + callback do tematów",
+    "thesis": "16 lat rządów Orbána skończyło się w jeden wieczór — a internet świętuje z memami, które mówią więcej niż jakikolwiek komentarz polityczny. I łączy wszystkie wątki odcinka.",
+    "keyFacts": [
+      "Twitter/X i Wykop eksplodowały memami w noc wyborczą",
+      "Polskie memy: 'Kaczyński dzwoni do Orbána: halo? — numer niedostępny'",
+      "NOWE: 50 tys. wolontariuszy TISZY vs miliardy na propagandę Fideszu — internet to podsumował jednym zdaniem",
+      "TISZA wygrała na TikToku i w terenie — Fidesz miał telewizję i AI"
+    ],
+    "clipSuggestions": "Kompilacja memów, TikToki świętujące, tłumy w Budapeszcie, polskie memy o Kaczyńskim i Orbánie, mem '50 tys. wolontariuszy vs AI boty'",
+    "beats": [
+      {
+        "beat": "INTRO",
+        "content": "Przegląd internetu. Orbán przegrał — i internet się nie zawiódł. Polskie memy: 'Kaczyński dzwoni do Orbána: halo? Numer niedostępny.' I mój ulubiony: 'Orbán wydał miliardy na propagandę, rosyjskie boty i sztuczną inteligencję. Magyar miał autobus i 50 tysięcy wolontariuszy. Wniosek: najlepsza sztuczna inteligencja przegrywa z naturalną.'",
+        "cue": "[GRAPHIC: memy na ekranie]"
+      },
+      {
+        "beat": "PUNCHLINE 1",
+        "content": "Kiedyś rewolucje robiło się na barykadach. Potem na TikToku. A na Węgrzech okazało się, że najskuteczniejsza rewolucja to facet, który po prostu wsiada w autobus i jedzie do 700 wsi. Technologia przyszłości przegrała z technologią z XIX wieku.",
+        "cue": "Obserwacja + punchline"
+      },
+      {
+        "beat": "FINISZ",
+        "content": "Człowiek, który kontrolował każdy kanał telewizyjny na Węgrzech, przegrał z aplikacją, którą jego wyborcy uważają za 'zabawkę dla dzieci'. I z autobusem. Nie zapominajmy o autobusie.",
+        "cue": "[PAUSE FOR LAUGH] callback do ground game"
+      }
+    ]
+  },
+  {
+    "type": "BONUS",
+    "id": "bonus-2",
+    "title": "'PiS będzie miało dwa płuca' — internet komentuje spotkanie Kaczyński-Morawiecki",
+    "angle": "Internet reaguje + callback do sondaży",
+    "thesis": "7 godzin rozmów, jedno zdjęcie, i tysiące memów — internet zobaczył w 'kompromisie' Kaczyńskiego i Morawieckiego coś, czego nie widzą komentatorzy: rozwód z 18,8% alimentami.",
+    "keyFacts": [
+      "Bielan opublikował zdjęcie: 'Kto się czubi, ten się lubi'",
+      "Internet: 'dwa płuca to organizm, który zaraz dostanie zapalenia'",
+      "Memy o rozwodzie, terapii par, i 'turbulencjach' Morawieckiego",
+      "NOWE: callback do sondażu 18,8% — 'stowarzyszenie które oficjalnie nie istnieje ma więcej procent niż Lewica'"
+    ],
+    "clipSuggestions": "Zdjęcie Bielana, kompilacja memów 'dwa płuca', TikToki o rozwodzie PiS, memy o terapii par, sondaż 18,8%",
+    "beats": [
+      {
+        "beat": "INTRO",
+        "content": "I na koniec PiS. Bielan wrzucił zdjęcie Kaczyńskiego z Morawieckim po 7 godzinach rozmów: 'Kto się czubi, ten się lubi.' Internet odpowiedział natychmiast.",
+        "cue": "[GRAPHIC: zdjęcie + memy]"
+      },
+      {
+        "beat": "PUNCHLINE 1",
+        "content": "Top memy: 'PiS będzie miało dwa płuca — to organizm, który zaraz dostanie zapalenia.' I: 'Siedem godzin rozmów to nie spotkanie polityczne. To terapia par.' I najlepsze: 'Stowarzyszenie, które oficjalnie nie istnieje, ma w sondażach 18,8%. To więcej niż Lewica. Rozwój Plus to nie stowarzyszenie — to partia w ukryciu.'",
+        "cue": "Seria memów + callback do sondażu"
+      },
+      {
+        "beat": "FINISZ",
+        "content": "Najlepszy komentarz z Wykopu: 'Kto się czubi, ten się lubi? To może jeszcze Tusk i Nawrocki się lubią?' I: 'Morawiecki mówi o turbulencjach. Turbulencje są, kiedy samolot leci. PiS nie leci — PiS spada. A Morawiecki ma spadochron za 18,8%.' Do zobaczenia w następnym odcinku Daylika.",
+        "cue": "[PAUSE FOR LAUGH] zamknięcie show + callback do openera"
+      }
+    ]
+  }
+]

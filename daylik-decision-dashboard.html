@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daylik Show — Decision Dashboard</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; color: #202124; line-height: 1.6; display: flex; }
+
+  /* ── Sidebar ── */
+  .sidebar { width: 220px; min-height: 100vh; background: #f8f9fa; border-right: 1px solid #e0e0e0; padding: 16px 0; position: fixed; top: 0; left: 0; overflow-y: auto; z-index: 50; }
+  .sidebar-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #5f6368; padding: 8px 16px 12px; border-bottom: 1px solid #e0e0e0; margin-bottom: 8px; }
+  .sidebar-item { display: block; padding: 10px 16px; font-size: 13px; color: #5f6368; cursor: pointer; border-left: 3px solid transparent; transition: all 0.1s; text-decoration: none; }
+  .sidebar-item:hover { background: #e8eaed; color: #202124; }
+  .sidebar-item.active { border-left-color: #1a73e8; background: #e8f0fe; color: #1a73e8; font-weight: 500; }
+  .sidebar-item .item-date { font-size: 12px; font-weight: 500; }
+  .sidebar-item .item-count { font-size: 11px; color: #9aa0a6; margin-top: 2px; }
+  .sidebar-item.active .item-count { color: #1a73e8; }
+  .sidebar-logo { padding: 12px 16px 16px; font-size: 15px; font-weight: 500; color: #ea4335; border-bottom: 1px solid #e0e0e0; margin-bottom: 4px; }
+
+  /* ── Main content ── */
+  .main { margin-left: 220px; flex: 1; padding-bottom: 60px; }
+
+  .header { padding: 32px 0 24px; border-bottom: 1px solid #e0e0e0; max-width: 800px; margin: 0 auto; }
+  .header h1 { font-size: 22px; font-weight: 400; color: #202124; }
+  .header .date { font-size: 14px; color: #5f6368; margin-top: 4px; }
+  .header .pipeline { font-size: 12px; color: #1a73e8; margin-top: 8px; letter-spacing: 0.3px; }
+
+  .container { max-width: 800px; margin: 0 auto; padding: 0 0 120px; }
+
+  .section-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #5f6368; margin: 28px 0 12px; padding: 12px 0 8px; border-bottom: 1px solid #e0e0e0; }
+
+  .topic-card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px 24px; margin-bottom: 12px; transition: all 0.15s; background: #fff; }
+  .topic-card:hover { box-shadow: 0 1px 6px rgba(32,33,36,0.1); }
+  .topic-card.selected-yes { border-color: #34a853; background: #f6fef7; }
+  .topic-card.selected-no { border-color: #dadce0; background: #f8f9fa; opacity: 0.55; }
+  .topic-card.selected-opener { border-color: #ea4335; border-width: 2px; background: #fef7f6; }
+
+  .topic-title { font-size: 16px; font-weight: 500; color: #202124; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .topic-summary { font-size: 14px; color: #5f6368; margin-bottom: 4px; }
+  .topic-hook { font-size: 13px; color: #b06000; margin-bottom: 14px; padding: 8px 12px; background: #fef7e0; border-radius: 6px; border-left: 3px solid #f9ab00; }
+
+  .narratives { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; font-size: 13px; }
+  .narrative { padding: 8px 10px; border-radius: 6px; background: #f8f9fa; border-left: 3px solid #dadce0; position: relative; }
+  .narrative .label { font-weight: 500; margin-bottom: 1px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+  .narrative .label a { font-size: 11px; color: #1a73e8; text-decoration: none; font-weight: 400; opacity: 0.7; }
+  .narrative .label a:hover { opacity: 1; text-decoration: underline; }
+  .narrative.prawica { border-left-color: #ea4335; }
+  .narrative.prawica .label { color: #c5221f; }
+  .narrative.lewica { border-left-color: #e37400; }
+  .narrative.lewica .label { color: #b06000; }
+  .narrative.libki { border-left-color: #1a73e8; }
+  .narrative.libki .label { color: #1a73e8; }
+  .narrative.luka { border-left-color: #34a853; }
+  .narrative.luka .label { color: #0d652d; }
+  .narrative .text { color: #5f6368; }
+
+  .decision-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 4px; }
+  .decision-btn { padding: 6px 16px; border-radius: 16px; border: 1px solid #dadce0; background: #fff; color: #5f6368; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.1s; }
+  .decision-btn:hover { background: #f1f3f4; border-color: #bdc1c6; }
+  .decision-btn.active-yes { border-color: #34a853; background: #e6f4ea; color: #0d652d; }
+  .decision-btn.active-no { border-color: #ea4335; background: #fce8e6; color: #c5221f; }
+  .decision-btn.active-opener { border-color: #ea4335; background: #ea4335; color: #fff; }
+
+  .notes-area { margin-top: 10px; }
+  .notes-area textarea { width: 100%; min-height: 48px; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 6px; padding: 8px 12px; color: #202124; font-size: 13px; font-family: inherit; resize: vertical; }
+  .notes-area textarea::placeholder { color: #9aa0a6; }
+  .notes-area textarea:focus { outline: none; border-color: #1a73e8; background: #fff; box-shadow: 0 0 0 2px #1a73e820; }
+
+  .general-notes { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px 24px; margin: 28px 0; }
+  .general-notes h3 { font-size: 14px; font-weight: 500; color: #202124; margin-bottom: 8px; }
+  .general-notes textarea { width: 100%; min-height: 100px; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px; color: #202124; font-size: 14px; font-family: inherit; resize: vertical; }
+  .general-notes textarea:focus { outline: none; border-color: #1a73e8; background: #fff; box-shadow: 0 0 0 2px #1a73e820; }
+  .general-notes .hint { font-size: 12px; color: #9aa0a6; margin-top: 6px; }
+
+  .submit-section { text-align: center; padding: 24px 0; }
+  .submit-btn { padding: 10px 32px; background: #1a73e8; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .submit-btn:hover { background: #1557b0; box-shadow: 0 1px 4px rgba(26,115,232,0.3); }
+
+  .status-bar { position: fixed; bottom: 0; left: 220px; right: 0; background: #fff; border-top: 1px solid #e0e0e0; padding: 10px 0; display: flex; justify-content: center; gap: 24px; align-items: center; font-size: 13px; z-index: 100; }
+  .status-bar .count { color: #0d652d; font-weight: 500; }
+  .status-bar .hint { color: #9aa0a6; }
+
+  .success-banner { display: none; position: fixed; top: 0; left: 220px; right: 0; background: #e6f4ea; border-bottom: 1px solid #34a853; padding: 14px 0; text-align: center; font-size: 14px; color: #0d652d; font-weight: 500; z-index: 200; }
+
+  @media (max-width: 768px) {
+    .sidebar { width: 180px; }
+    .main { margin-left: 180px; }
+    .status-bar { left: 180px; }
+    .success-banner { left: 180px; }
+    .narratives { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="success-banner" id="successBanner">
+  Decyzje zapisane. Agent je automatycznie odczyta.
+</div>
+
+<!-- ── Sidebar ── -->
+<div class="sidebar">
+  <div class="sidebar-logo">DAYLIK SHOW</div>
+  <div class="sidebar-title">Briefy tygodniowe</div>
+  <div id="sidebarList"></div>
+</div>
+
+<!-- ── Main ── -->
+<div class="main">
+  <div class="header">
+    <h1>Daylik Show — Decision Dashboard</h1>
+    <div class="date" id="briefDate"></div>
+    <div class="pipeline">Phase 1 Research &rarr; Twoja decyzja &rarr; Phase 2 Briefs + Beats</div>
+  </div>
+  <div class="container" id="app"></div>
+  <div class="status-bar">
+    <div class="count" id="statusCount">0 temat&oacute;w wybranych</div>
+    <div class="hint">Kliknij decyzj&eograve; przy ka&zdot;dym temacie</div>
+  </div>
+</div>
+
+<script>
+// ═══ DASHBOARD HISTORY — each weekly brief is an entry ═══
+const dashboardHistory = [
+  {
+    id: "week-2026-06-18-25",
+    label: "18-25 czerwca 2026",
+    date: "Tydzień 18-25 czerwca 2026",
+    popularne_trendy: [
+      {
+        id: "pt-1",
+        title: "Nawrocki odbiera Zełenskiemu Order Orła Białego — Polska-Ukraina na krawędzi",
+        summary: "Prezydent Nawrocki odebrał Zełenskiemu Order Orła Białego po tym, jak Ukraina nazwała jednostkę wojskową 'Bohaterami UPA'. Zełenski odesłał order. Kučma, Juszczenko i Poroszenko oddali swoje polskie odznaczenia. Tusk: 'konflikt Polska-Ukraina cieszy Putina — to strategiczny błąd obu stron'.",
+        hook: "Prezydent odbiera order prezydentowi kraju w stanie wojny. W odpowiedzi trzy pokolenia ukraińskich przywódców odsyłają polskie odznaczenia. A Putin otwiera szampana.",
+        narratives: {
+          prawica: "Nawrocki słusznie broni pamięci ofiar UPA — honor i historyczna prawda nie podlegają dyplomatycznym targom",
+          lewica: "Nawrocki prowokuje kryzys w najgorszym momencie — Ukraina walczy o przetrwanie, a Polska kłóci się o symbole",
+          libki: "Obie strony popełniają błąd — Zełenski nie powinien był nazywać jednostki 'Bohaterami UPA', a Nawrocki nie powinien eskalować w trakcie wojny",
+          luka: "Nikt nie łączy: Zełenski twierdzi, że Nawrocki chce zablokować otwarcie nowego klastra negocjacyjnego UE dla Ukrainy. Czy order to pretekst do gry o coś większego?"
+        },
+        urls: {
+          prawica: "https://niezalezna.pl/polska/prezydent-nawrocki-odebral-order-orla-bialego-zelenskiemu-jest-reakcja-ukrainskiego-msz/573156",
+          lewica: "https://oko.press/decyzja-nawrockiego-ogloszona-w-najgorszym-momencie",
+          libki: "https://www.rp.pl/polityka/art44666411-nawrocki-dal-zelenskiemu-czas-na-zmiane-decyzji-kulisy-gry-wokol-orderu-orla-bialego",
+          luka: "https://wydarzenia.interia.pl/zagranica/news-zelenski-komentuje-decyzje-nawrockiego-on-powiedzial-mi-otwa,nId,23503272"
+        }
+      },
+      {
+        id: "pt-2",
+        title: "Afera Szpitala Południowego — lekarz-radny KO zarobił 1,6 mln zł i VIP-owski SOR dla polityków",
+        summary: "Zero.pl ujawniło: Dawid Kacprzyk, radny KO bez specjalizacji, koordynował SOR w Szpitalu Południowym i zarobił 1,6 mln zł w rok. Politycy KO i ich rodziny mieli osobną ścieżkę przyjęć, omijając kolejkę. Kacprzyk zrezygnował z mandatu, zwrócił 500 tys. zł, prokuratura wszczęła dwa śledztwa. Tusk: 'Żadnej litości'.",
+        hook: "Lekarz bez specjalizacji zarabia 1,6 mln rocznie w publicznym szpitalu, a politycy rządzącej partii omijają SOR osobną ścieżką. I to ujawnia... Kanał Zero — największy konkurent toTU.",
+        narratives: {
+          prawica: "Afera obnażająca hipokryzję KO — głoszą równość, a sami mają VIP-owski SOR za publiczne pieniądze",
+          lewica: "To jednostkowy przypadek nadużycia, nie systemowy problem — Tusk zareagował szybko i zdecydowanie",
+          libki: "Problem jest szerszy: politycy w radach nadzorczych szpitali to patologia, niezależnie od partii",
+          luka: "Nikt nie pyta: skoro dyrekcja wiedziała od roku (pismo lekarzy z lipca 2025), to dlaczego zareagowała dopiero gdy media to ujawniły? Ile jeszcze takich szpitali?"
+        },
+        urls: {
+          prawica: "https://niezalezna.pl/polska/afera-w-szpitalu-poludniowym-ponad-trzykrotny-wzrost-skarg-na-sor-za-kadencji-dawida-kacprzyka/573476",
+          lewica: "https://wiadomosci.wp.pl/afera-w-szpitalu-poludniowym-tusk-zadnej-litosci-7300299637024768a",
+          libki: "https://www.rp.pl/kraj/art44643961-rzecz-w-tym-afera-w-szpitalu-poludniowym-moze-uderzyc-w-rzad",
+          luka: "https://dorzeczy.pl/obserwator-mediow/904831/od-roku-wiedzieli-pismo-lekarzy-do-dyrekcji-ws-kacprzyka.html"
+        }
+      }
+    ],
+    discovery: [
+      {
+        id: "disc-1",
+        title: "Afera podkarpacka 2.0 — ukraińscy gangsterzy byli agentami polskich służb",
+        summary: "Onet i Goniec ujawniły: bracia Rysicz, ukraińscy gangsterzy prowadzący sieć agencji escort na Podkarpaciu, od lat byli tajnymi współpracownikami CBŚ. Policja tolerowała ich działalność (prostytucja, szantaż polityków) w zamian za informacje. Minister Żurek: 'za wcześnie na komentarz'.",
+        hook: "Państwo polskie płaciło ukraińskim gangsterom za informacje, jednocześnie przymykając oko na ich 'usługi' — w tym kompromitowanie polskich polityków. Ile osób na szczytach władzy ma haki od braci Rysicz?",
+        narratives: {
+          prawica: "Służby za PO i PSL tolerowały przestępców — to afera na skalę systemową",
+          lewica: "To problem z czasów rządów PiS — służby były upolitycznione i poza kontrolą",
+          libki: "Kluczowe pytanie to nadzór nad służbami — kto kontroluje CBŚ i kto wiedział o współpracy?",
+          luka: "Nikt nie łączy: bracia Rysicz mieli 'haki' na polityków WSZYSTKICH opcji. Kto konkretnie był szantażowany? I czy te haki nadal działają?"
+        },
+        urls: {
+          prawica: "https://dorzeczy.pl/kraj/898132/afera-podkarpacka-zurek-reaguje-na-sensacyjne-ustalenia-onetu.html",
+          lewica: "https://natemat.pl/656371,afera-podkarpacka-wraca-i-szokuje-tylko-mocniej-braciom-rysicz-placily-sluzby",
+          libki: "https://www.rp.pl/przestepczosc/art44577321-ukrainscy-gangsterzy-mieli-pracowac-dla-polskich-sluzb-kulisy-afery-braci-rysiczow",
+          luka: "https://wiadomosci.dziennik.pl/polityka/artykuly/11259729,afera-podkarpacka-ukrainscy-gangsterzy-mieli-haki-na-polskich-politykow.html"
+        }
+      },
+      {
+        id: "disc-2",
+        title: "NATO w Hadze: 5% PKB na obronność do 2035 — Polska już wydaje 4,3%",
+        summary: "Szczyt NATO w Hadze: 32 państwa zobowiązały się do 5% PKB na obronność do 2035 r. (3,5% wydatki wojskowe + 1,5% infrastruktura krytyczna, innowacje). Polska już wydaje 4,3% (rekordowe 200 mld zł). Ale Litwa planuje 5,38% i przejmuje pozycję lidera.",
+        hook: "Polska miała być liderem NATO w wydatkach na obronność. Była — przez chwilę. Teraz Litwa wydaje więcej. A do 2035 roku KAŻDY kraj NATO ma wydawać 5% PKB — to największy skok zbrojeniowy od zimnej wojny.",
+        narratives: {
+          prawica: "Polska powinna wydawać jeszcze więcej — bezpieczeństwo nie ma ceny, a Rosja jest tuż za granicą",
+          lewica: "5% PKB to ogromne obciążenie — skąd wziąć pieniądze na szkoły, szpitale, zieloną transformację?",
+          libki: "Cel jest słuszny, ale ważniejsze od procentów jest JAK wydajemy — Polska marnuje miliardy na nieefektywne zakupy",
+          luka: "Nikt nie liczy: 5% PKB to ~250 mld zł rocznie. To dwukrotność budżetu na zdrowie. Polska będzie musiała WYBIERAĆ między czołgami a szpitalami."
+        },
+        urls: {
+          prawica: "https://forsal.pl/kraj/bezpieczenstwo/artykuly/11252402,nowy-uklad-sil-w-nato-kto-wydaje-najwiecej-na-obronnosc-w-2026-roku-oto-miejsce-polski.html",
+          lewica: "https://www.obserwatorfinansowy.pl/bez-kategorii/rotator/5-proc-pkb-na-wojsko-w-krajach-nato-wyzwania-i-ryzyka-dla-europy/",
+          libki: "https://www.rp.pl/polityka/art42589741-szczyt-w-hadze-jest-decyzja-ws-zwiekszenia-wydatkow-panstw-nato-na-obronnosc",
+          luka: "https://www.money.pl/gospodarka/historyczna-decyzja-nato-5-proc-pkb-rocznie-postanowili-7171502610619296a.html"
+        }
+      },
+      {
+        id: "disc-3",
+        title: "Koniec monopolu Orlenu na gaz — FSRU 2 otwiera rynek dla konkurencji",
+        summary: "Orlen, Unimot, PGE i Enea zarezerwowały moce w planowanym terminalu FSRU 2 w Zatoce Gdańskiej. Orlen miał 90,7% rynku gazu. Teraz trzy inne spółki Skarbu Państwa mogą importować LNG niezależnie. Zainteresowanie z Węgier, Słowacji i Ukrainy. Polska może stać się gazowym hubem Europy Środkowej.",
+        hook: "Orlen miał monopol na import gazu do Polski. Teraz... inne spółki Skarbu Państwa łamią monopol Skarbu Państwa. Państwo konkuruje samo ze sobą — i nazywa to 'otwarciem rynku'.",
+        narratives: {
+          prawica: "Konkurencja w gazie to dobrze, ale PGE i Enea nie powinny wchodzić w rynek Orlenu — to dezorganizacja sektora",
+          lewica: "Monopol Orlenu oznaczał zawyżone ceny — otwarcie rynku to krok w stronę niższych rachunków za gaz",
+          libki: "Prawdziwa konkurencja to nie spółki Skarbu Państwa walczące ze sobą — trzeba wpuścić prywatny kapitał",
+          luka: "Nikt nie zauważa absurdu: trzy spółki SP łamią monopol czwartej spółki SP. Rząd jest jednocześnie regulatorem, właścicielem monopolisty i właścicielem konkurencji."
+        },
+        urls: {
+          prawica: "https://xyz.pl/monopol-orlenu-w-imporcie-gazu-przelamany-nowy-terminal-lng-zrobi-rewolucje/",
+          lewica: "https://energia.rp.pl/gaz/art44687001-nowi-gracze-wchodza-na-rynek-lng-orlen-nie-boi-sie-konca-monopolu",
+          libki: "https://energia.rp.pl/gaz/art44683201-koniec-monopolu-orlenu-w-imporcie-gazu-do-polski-winne-spolki-skarbu-panstwa",
+          luka: "https://www.parkiet.com/surowce-i-paliwa/art44684151-koniec-monopolu-orlenu-w-imporcie-gazu-do-polski-winne-spolki-skarbu-panstwa"
+        }
+      },
+      {
+        id: "disc-4",
+        title: "40°C w Polsce — rekord sprzed 105 lat może paść w tym tygodniu",
+        summary: "Sahara nad Polską: fala gorąca z Afryki przynosi temperatury do 40°C. Zagrożony rekord z 1921 r. (40,2°C w Prószkowie). Tropikalne noce. Druga fala upałów w 2026 silniejsza i dłuższa od pierwszej. Klimatolodzy: 'nie pytanie czy, ale kiedy padnie 40 stopni'.",
+        hook: "Rekord gorąca w Polsce ma 105 lat. W tym tygodniu może paść. A Polska nie ma żadnego ogólnokrajowego planu na fale upałów — ani dla ludzi, ani dla infrastruktury.",
+        narratives: {
+          prawica: "Upały to naturalne zjawisko pogodowe — nie powód do paniki klimatycznej i nowych regulacji",
+          lewica: "Kryzys klimatyczny jest faktem — Polska musi przyspieszyć zieloną transformację zamiast budować nowe elektrownie węglowe",
+          libki: "Niezależnie od przyczyn, Polska potrzebuje planu adaptacji — chłodzenie miast, zielona infrastruktura, systemy ostrzegania",
+          luka: "Nikt nie mówi o kosztach: każdy dzień upałów powyżej 35°C obniża produktywność o 10-15%. Rolnictwo, budownictwo, logistyka — straty idą w miliardy, których nikt nie liczy."
+        },
+        urls: {
+          prawica: "https://www.polsatnews.pl/wiadomosc/2026-06-23/upal-jak-na-saharze-moze-pasc-rekord-goraca-w-polsce/",
+          lewica: "https://oko.press/fala-upalow-przed-nami",
+          libki: "https://smoglab.pl/rekordowe-40-stopni-w-polsce-klimatolog-nie-czy-ale-kiedy/",
+          luka: "https://bizblog.spidersweb.pl/rekord-temperatury-i-fala-upalow-w-calej-europie"
+        }
+      },
+      {
+        id: "disc-5",
+        title: "Polska nr 1 celem hakerów w Europie — samorządy są otwartą bramą",
+        summary: "Check Point: polskie instytucje rządowe to cel nr 1 cyberataków w regionie. NIK potwierdza: samorządy to 'najsłabsze ogniwo' cyberbezpieczeństwa. 50% ataków przez niezabezpieczone VPN. Zhakowana elektrociepłownia, PSE, dziesiątki obiektów energetycznych. Każdy samorząd 'może być niemal pewny, że stanie się celem'.",
+        hook: "Polska wydaje 200 mld zł na armię, ale hakerzy wchodzą do systemu energetycznego przez niezabezpieczonego VPN-a w urzędzie gminy. Cyberwojnę z Rosją przegrywamy na poziomie wiejskiego sekretariatu.",
+        narratives: {
+          prawica: "Rząd nie chroni Polski w cyberprzestrzeni — wydaje miliardy na armię, a nie potrafi zabezpieczyć urzędów",
+          lewica: "Samorządy nie mają budżetów na cyberbezpieczeństwo — państwo musi im pomóc finansowo i kompetencyjnie",
+          libki: "To problem zarządzania, nie technologii — potrzebna centralna strategia i obowiązkowe standardy dla JST",
+          luka: "Nikt nie łączy: Polska wydaje 4,3% PKB na obronność, ale praktycznie zero na cyberbezpieczeństwo samorządów. A to tam są dane osobowe, rejestry, infrastruktura krytyczna."
+        },
+        urls: {
+          prawica: "https://cyberdefence24.pl/cyberbezpieczenstwo/ataki-hakerskie-na-polskie-samorzady-w-co-inwestowac",
+          lewica: "https://www.bankier.pl/wiadomosc/Kazdy-samorzad-moze-byc-niemal-pewny-ze-stanie-sie-celem-cyberataku-9151406.html",
+          libki: "https://www.rp.pl/biznes/art44606961-polska-na-cyfrowym-froncie-czas-na-decyzje-w-gabinetach-prezesow",
+          luka: "https://pro.rp.pl/raporty-ekonomiczne/art43628351-fatalny-poczatek-roku-polskie-instytucje-to-nr-1-celow-hakerow-w-regionie"
+        }
+      },
+      {
+        id: "disc-6",
+        title: "AI zjada polski rynek pracy — 5 mln stanowisk zagrożonych automatyzacją",
+        summary: "Raport: 30,3% polskich stanowisk (ponad 5 mln) może być częściowo zautomatyzowanych przez GenAI. Pracownicy biurowi najbardziej zagrożeni (71,6%). MŚP rozpoznają korzyści AI, ale mają ogromną lukę kompetencyjną. Rekrutacja coraz częściej wymaga umiejętności AI.",
+        hook: "5 milionów polskich stanowisk pracy jest zagrożonych przez AI. Ale zamiast to policzyć i przygotować plan — Polska dyskutuje o tym, czy AI to 'szansa czy zagrożenie'. Odpowiedź: jedno i drugie. Ale plan trzeba mieć TERAZ.",
+        narratives: {
+          prawica: "Regulacja AI to kolejna przeszkoda dla biznesu — niech rynek sam się dostosuje",
+          lewica: "AI pogłębia nierówności — pracownicy biurowi i niżej opłacani stracą pierwsi, potrzebne osłony socjalne",
+          libki: "Kluczowe to przekwalifikowanie — Polska powinna masowo inwestować w szkolenia AI, nie w ochronę miejsc pracy",
+          luka: "Nikt nie mówi: Polska nie ma ŻADNEJ krajowej strategii adaptacji rynku pracy do AI. GUS nawet nie mierzy automatyzacji stanowisk."
+        },
+        urls: {
+          prawica: "https://wartowiedziec.pl/polityka-spoleczna/79009-rynek-pracy-2026-jak-sztuczna-inteligencja-automatyzacja-i-cyberbezpieczenstwo-zmienia-zasady-gry",
+          lewica: "https://ai.gov.pl/aktualnosci/sztuczna-inteligencja-a-polski-rynek-pracy-%E2%80%93-zagro%C5%BCenie-czy-szansa",
+          libki: "https://tvn24.pl/biznes/tech/rewolucja-sztucznej-inteligencji-a-rynek-pracy-w-2026-roku-pora-sprzatac-biurko-st8827935",
+          luka: "https://efectownia.pl/raport-ai-w-msp-w-polsce-2026/"
+        }
+      },
+      {
+        id: "disc-7",
+        title: "'Czarna Księga' wydatków publicznych 2026 — jak państwo marnuje Twoje pieniądze",
+        summary: "Warsaw Enterprise Institute opublikował 'Czarną Księgę' wydatków publicznych na 2026 rok. Katalog absurdalnych, nieefektywnych i marnotrawnych wydatków z budżetu państwa. Zielone skwerki w Warszawie za 330 tys. zł, system kaucyjny jako 'pomnik polskiej improwizacji', e-faktura KSeF nadal nie działa płynnie.",
+        hook: "Co roku ktoś publikuje listę absurdalnych wydatków państwa. Co roku politycy obiecują oszczędności. Co roku lista jest dłuższa. 'Czarna Księga' to coroczny dowód, że nikt tego nie kontroluje.",
+        narratives: {
+          prawica: "Rząd Tuska rozrzuca pieniądze — 'Czarna Księga' to dowód na brak odpowiedzialności fiskalnej",
+          lewica: "Marnotrawstwo jest problemem systemowym — dotyka każdą partię u władzy, nie tylko obecną koalicję",
+          libki: "Potrzebne spending review na wzór UK — systematyczny przegląd wydatków, nie jednorazowe publikacje NGO",
+          luka: "Nikt nie pyta: dlaczego NIK, który ma mandat do kontroli, nie publikuje takiej listy? Czemu robi to prywatny think tank?"
+        },
+        urls: {
+          prawica: "https://wei.org.pl/czarna-ksiega-wydatkow-publicznych-edycja-2026/",
+          lewica: "https://www.polityka.pl/",
+          libki: "https://waweldom.com/2026/01/20/legislacyjny-labirynt-czesc-2-kolejne-10-absurdow-polskiego-prawa-ktore-zabijaja-przedsiebiorczosc-styczen-2026/",
+          luka: "https://wei.org.pl/czarna-ksiega-wydatkow-publicznych-edycja-2026/"
+        }
+      }
+    ],
+    bonusy: [
+      {
+        id: "bonus-1",
+        title: "Memy o odebraniu orderu Zełenskiemu — internet pęka",
+        summary: "X i Wykop eksplodowały po decyzji Nawrockiego. Memy: 'Nawrocki odbiera ordery jak NFZ odbiera rezonansy — bez wyjaśnienia'. Ukraińska strona odsyła odznaczenia hurtowo. Internet: 'to nie dyplomacja, to wymiana zwrotów na Allegro'."
+      },
+      {
+        id: "bonus-2",
+        title: "'Sahara Polska' — TikTok i memy o fali upałów",
+        summary: "TikTokerzy z Polski nagrywają challenge 'przeżyj bez klomy' i 'smażenie jajka na chodniku'. Memy: 'Polska nie potrzebuje atomu — wystarczy panel słoneczny na Dolnym Śląsku'. Hashtag #Sahara2026 trenduje."
+      },
+      {
+        id: "bonus-3",
+        title: "Kanał Zero ujawnia aferę szpitalną — internet: 'Stanowski robi robotę za prokuraturę'",
+        summary: "Portal Zero.pl (Kanał Zero) pierwszy ujawnił aferę Szpitala Południowego. Komentarze: 'YouTuber robi dziennikarstwo śledcze lepiej niż TVN'. Reakcja KO: 'to nie jest dziennikarstwo, to polityczny atak'. Internet: 'najlepszy żart roku'."
+      }
+    ]
+  },
+  {
+    id: "week-2026-04-14-21",
+    label: "14-21 kwietnia 2026",
+    date: "Tydzień 14-21 kwietnia 2026",
+    popularne_trendy: [
+      {
+        id: "pt-1",
+        title: "Orbán przegrał wybory — koniec ery i lekcja dla polskiej prawicy",
+        summary: "Partia TISZA Pétera Magyara zdobyła 138 ze 199 mandatów — większość konstytucyjną. Orbán: 'Będziemy w opozycji'. Klęska populistycznej prawicy, która manipulowała regułami gry i sama wpadła w pułapkę.",
+        hook: "Jeśli Orbán — z pełną kontrolą nad mediami, ordynacją i sądami — przegrywa z kretesem, to co to znaczy dla Kaczyńskiego, który nie ma nawet połowy tych narzędzi?",
+        narratives: {
+          prawica: "Orbán przegrał bo zbyt długo rządził i oderwał się od ludzi — PiS musi wyciągnąć wnioski",
+          lewica: "Węgry dowodzą: autorytaryzm przegrywa z mobilizacją obywatelską. Polska powinna iść tą drogą",
+          libki: "System Orbána padł bo manipulował regułami — ordynacją, mediami, sądami. Instytucje w końcu się mszczą",
+          luka: "Nikt nie mówi, że TISZA wygrała kampanię głównie na TikToku i YouTube — stare media Fideszu okazały się bezużyteczne"
+        },
+        urls: {
+          prawica: "https://nczas.info/2026/04/20/rozlam-w-pis-coraz-blizej-morawiecki-mowi-o-turbulencjach/",
+          lewica: "https://oko.press/referendum-bitwa-o-krakow-czyli-dlaczego-tusk-juz-siega-po-plan-b",
+          libki: "https://www.tygodnikpowszechny.pl/kleska-orbana-wladza-ktora-manipuluje-regulami-sama-wpada-w-pulapke-193361",
+          luka: "https://www.polityka.pl/tygodnikpolityka/swiat/2338933,1,wybory-na-wegrzech-schodza-kolejne-wyniki-wielki-sukces-tiszy-kleska-orbna-bedziemy-w-opozycji.read"
+        }
+      },
+      {
+        id: "pt-2",
+        title: "Kaczyński vs Morawiecki — PiS pęka na żywo",
+        summary: "Morawiecki założył stowarzyszenie Rozwój Plus. Kaczyński: 'kto się angażuje — nie będzie na listach PiS'. 7-godzinne spotkanie, kompromis: stowarzyszenie będzie 'wewnątrz partii'. PiS to już koalicja 4 frakcji.",
+        hook: "PiS oficjalnie jest jedną partią. Nieoficjalnie to koalicja harcerzy Morawieckiego, maślarzy, ziobrystów i zakonu PC Kaczyńskiego. I każda frakcja gra o swoje.",
+        narratives: {
+          prawica: "Morawiecki szuka nowej drogi — PiS musi się zreformować albo przegrać jak Fidesz",
+          lewica: "Rozłam PiS to naturalna konsekwencja partii zbudowanej wokół jednego lidera — Kaczyński traci kontrolę",
+          libki: "Problem PiS to brak programu — walka Morawiecki-Kaczyński jest o władzę, nie o idee",
+          luka: "Nikt nie zauważa, że 'kompromis' (stowarzyszenie wewnątrz partii) to de facto kapitulacja Morawieckiego"
+        },
+        urls: {
+          prawica: "https://nczas.info/2026/04/20/rozlam-w-pis-coraz-blizej-morawiecki-mowi-o-turbulencjach/",
+          lewica: "https://www.polsatnews.pl/wiadomosc/2026-04-19/konflikt-kaczynskiego-z-morawieckim-zaszkodzi-pis-owi-ma-naprawde-duzy-problem/",
+          libki: "https://www.rp.pl/polityka/art44196891-siedem-godzin-rozmow-kaczynski-morawiecki-pis-bedzie-mial-dwa-pluca",
+          luka: "https://resfutura.pl/algorytm-rozpadu/"
+        }
+      }
+    ],
+    discovery: [
+      {
+        id: "disc-1",
+        title: "Afera Zondacrypto — 350 mln zł wyparowało, a Nawrocki wetuje ustawę chroniącą inwestorów",
+        summary: "Giełda krypto Zondacrypto: rezerwy BTC spadły o 99,7% (z 55 BTC do 0,18 BTC). 30 tys. potencjalnych ofiar. Prokuratura w Katowicach wszczęła śledztwo. Pieniądze trafiały do osób powiązanych z politykami (Ziobro, Wipler, Woś). Nawrocki zawetował ustawę o kryptoaktywach — dwukrotnie.",
+        hook: "Prezydent wetuje ustawę, która miałaby chronić 30 tysięcy ludzi przed utratą oszczędności. Powód? 'Nadregulacja'. A pieniądze z giełdy szły do jego obozu politycznego.",
+        narratives: {
+          prawica: "Nawrocki słusznie bronił rynku krypto przed nadregulacją — ustawa zabiłaby innowacje w Polsce",
+          lewica: "Weto to ochrona interesów polityków powiązanych z Zondacrypto — pieniądze szły do środowiska PiS",
+          libki: "Regulacja MiCA jest konieczna — bez niej Polska jest jedynym krajem UE bez nadzoru nad krypto",
+          luka: "Nikt nie pyta: dlaczego Sejm nie potrafił zebrać 3/5 głosów do odrzucenia weta? 243 za, potrzebne 276 — ktoś z koalicji nie głosował."
+        },
+        urls: {
+          prawica: "https://www.polsatnews.pl/wiadomosc/2026-04-17/glosne-weto-prezydenta-nie-zalowalem-ani-przez-sekunde/",
+          lewica: "https://oko.press/zondacrypto-co-poslowie-musza-wiedziec-przed-kluczowym-glosowaniem",
+          libki: "https://www.bankier.pl/wiadomosc/Kryptowaluty-weto-Nawrockiego-i-Zondacrypto-Kto-nie-mowi-prawdy-9111165.html",
+          luka: "https://www.money.pl/gospodarka/afera-zondacrypto-narasta-spor-rzadu-z-prezydentem-7276595105138976a.html"
+        }
+      },
+      {
+        id: "disc-2",
+        title: "'Czarny Tydzień' szpitali — 20-24 kwietnia protest w całej Polsce",
+        summary: "Ogólnopolski Związek Pracodawców Szpitali Powiatowych ogłosił 'Czarny Tydzień'. Czarne flagi, opaski, hasło: 'Szpitalne łóżko poczeka, choroba nie'. NFZ nie płaci za nadwykonania. Ponad połowa szpitali na minusie.",
+        hook: "Szpitale powiatowe leczą więcej pacjentów niż im płacą — NFZ nazywa to 'nadwykonaniami' i nie zwraca pieniędzy. Efekt: czarne flagi na budynkach w całej Polsce.",
+        narratives: {
+          prawica: "Rząd Tuska obiecywał naprawę służby zdrowia — zamiast tego szpitale bankrutują",
+          lewica: "Problem jest systemowy — prywatyzacja i niedofinansowanie ciągną się od 30 lat",
+          libki: "NFZ to dinozaur — zamiast łatania dziury potrzebna reforma całego systemu finansowania",
+          luka: "Nikt nie mówi wprost: 'nadwykonania' to eufemizm na 'szpital uratował więcej ludzi niż mu pozwolono'"
+        },
+        urls: {
+          prawica: "https://www.bankier.pl/wiadomosc/System-nie-do-przejscia-Szpitale-powiatowe-protestuja-przeciwko-cieciom-NFZ-9116344.html",
+          lewica: "https://politykazdrowotna.com/artykul/szpitalne-lozko-n2260223",
+          libki: "https://www.gazetaprawna.pl/biznes/zdrowie/artykuly/11235252,czarny-tydzien-protest-szpitale-powiatowe.html",
+          luka: "https://www.rp.pl/ochrona-zdrowia/art44168811-szpitalne-lozko-poczeka-choroba-nie-juz-w-poniedzialek-zastrajkuja-szpitale-dowiedziala-sie-rzeczpospolita"
+        }
+      },
+      {
+        id: "disc-3",
+        title: "Macron w Gdańsku — Polska i Francja ćwiczą odstraszanie nuklearne",
+        summary: "I Polsko-Francuski Szczyt Międzyrządowy. Tusk i Macron ogłosili: wspólne ćwiczenia z elementami odstraszania nuklearnego, satelity wojskowe (Airbus+Thales+Radmor), wspólne wywiad. Kontekst: USA się wycofują z Europy.",
+        hook: "Polska nigdy nie miała nic wspólnego z bronią jądrową. Od tego tygodnia ćwiczy z Francją 'elementy odstraszania nuklearnego'. Bo Trump wycofuje się z NATO.",
+        narratives: {
+          prawica: "Tusk gra pod Brukselę i Paryż — prawdziwe bezpieczeństwo to relacje z USA, nie Macron",
+          lewica: "Europa musi wziąć obronność w swoje ręce — współpraca z Francją to krok w dobrym kierunku",
+          libki: "Wspólne odstraszanie nuklearne to historyczny moment — Polska wreszcie buduje realne sojusze obronne",
+          luka: "Nikt nie mówi o tym, że to de facto przyznanie: USA nie obronią Europy. Dlatego Europa musi się uzbroić sama."
+        },
+        urls: {
+          prawica: "https://wiadomosci.wp.pl/macron-i-tusk-z-apelem-do-usa-padly-mocne-slowa-ws-trumpa-7277369115325505v",
+          lewica: "https://natemat.pl/650065,macron-z-tuskiem-nie-tylko-rozmawiali-czas-na-sojusz-ktory-siegnie-gwiazd",
+          libki: "https://www.euronews.com/my-europe/2026/04/20/france-and-poland-discuss-boosted-defence-ties-as-us-commitment-to-europe-wavers",
+          luka: "https://eadaily.com/en/news/2026/04/17/poland-and-france-want-to-stretch-the-nato-pipeline-closer-to-russia"
+        }
+      },
+      {
+        id: "disc-4",
+        title: "Wotum nieufności wobec Hennig-Kloski — koalicja Tuska na krawędzi",
+        summary: "PiS i Konfederacja złożyli wniosek o odwołanie min. klimatu Hennig-Kloski. Problem: Polska 2050 nie chce jej bronić. Tusk postawił ultimatum: 'jeśli nie z nami, to się żegnamy'. Głosowanie 28-30 kwietnia.",
+        hook: "Premier musi bronić minister, której nie lubi nawet jej własna partia. A jeśli Polska 2050 zagłosuje przeciw — koalicja straci większość.",
+        narratives: {
+          prawica: "Hennig-Kloska to symbol niekompetencji rządu — powinna odejść wraz z całą 'zieloną' agendą",
+          lewica: "Opozycja używa wotum jako narzędzia destabilizacji — to nie o Hennig-Kloskę, to o rozbicie koalicji",
+          libki: "Kryzys pokazuje strukturalną słabość koalicji — 4 partie, żadnego spoiwa poza 'anty-PiS'",
+          luka: "Nikt nie zauważa absurdu: Polska 2050 sama zgłosiła Hennig-Kloskę, a teraz nie chce jej bronić"
+        },
+        urls: {
+          prawica: "https://dorzeczy.pl/kraj/875614/polska-2050-i-psl-chca-sie-spotkac-z-hennig-kloska.html",
+          lewica: "https://niezalezna.pl/polityka/wotum-nieufnosci-wobec-hennig-kloski-kto-za-a-kto-przeciw/568265",
+          libki: "https://edgp.gazetaprawna.pl/kraj/polityka/artykuly/11229564,wotum-dla-hennigkloski-dzieli-polske-2050-gra-toczy-sie-o-klub-i-wpl.html",
+          luka: "https://wydarzenia.interia.pl/kraj/news-trzeszczy-w-koalicji-donald-tusk-stawia-ultimatum,nId,23329845"
+        }
+      },
+      {
+        id: "disc-5",
+        title: "Tusk w Tokio — pierwsze 'strategiczne partnerstwo' Polski z Azją",
+        summary: "Polska i Japonia podniosły relacje do poziomu 'wszechstronnego partnerstwa strategicznego'. Współpraca: energetyka jądrowa, satelity kosmiczne, wodór, przemysł obronny. Pierwszy premier RP w Japonii od 6 lat.",
+        hook: "Polska zawsze patrzyła na zachód. Teraz Tusk leci do Tokio podpisywać umowy o satelitach, atomie i wodorze. Bo w świecie po Trumpie trzeba mieć więcej niż jednego sojusznika.",
+        narratives: {
+          prawica: "Tusk szuka sojuszników bo stracił relacje z USA — wizyta w Japonii to przyznanie się do porażki",
+          lewica: "Dywersyfikacja sojuszy to dojrzała polityka zagraniczna — Japonia to naturalny partner technologiczny",
+          libki: "Atomówka, wodór, satelity — to realne projekty, nie dyplomatyczne zdjęcia. Wreszcie konkrety",
+          luka: "Nikt nie zauważa: Japonia ma własną wersję problemu demograficznego. Mogą nas nauczyć, czego NIE robić."
+        },
+        urls: {
+          prawica: "https://www.salon24.pl/newsroom/1499187,tusk-w-tokio-polska-i-japonia-podnosza-range-relacji",
+          lewica: "https://www.polsatnews.pl/wiadomosc/2026-04-15/polska-i-japonia-zaciesniaja-wspolprace-premier-podpisal-strategiczna-deklaracje/",
+          libki: "https://www.gov.pl/web/premier/wspolne-oswiadczenie-premier-japonii-sanae-takaichi-oraz-premiera-rzeczypospolitej-polskiej-donalda-tuska",
+          luka: "https://www.nowin.pl/2026/04/15/polska-i-japonia-podnosza-relacje-tokio-otwiera-nowy-etap-wspolpracy/"
+        }
+      },
+      {
+        id: "disc-6",
+        title: "120 dni na rezonans — rząd limituje diagnostykę, pacjenci onkologiczni czekają",
+        summary: "Od 1 kwietnia NFZ ograniczył finansowanie nadwykonań w diagnostyce obrazowej. Szpitale wstrzymały zapisy na tomografię i rezonans. W niektórych regionach chorzy na raka czekają ponad 120 dni. Radiolodzy kłócą się z kardiologami o pieniądze.",
+        hook: "Masz raka? Poczekaj 4 miesiące na rezonans. Bo NFZ wprowadził limity na ratowanie ci życia. Nazywają to 'optymalizacją wydatków'.",
+        narratives: {
+          prawica: "Rząd oszczędza na zdrowiu Polaków — to jest prawdziwy skandal, nie kolejna afera polityczna",
+          lewica: "System zdrowia potrzebuje więcej pieniędzy, nie limity — składka zdrowotna musi rosnąć",
+          libki: "Limity NFZ to objaw problemu, nie rozwiązanie — trzeba dopuścić prywatną konkurencję",
+          luka: "Nikt nie łączy: 'Czarny Tydzień' szpitali + limity na diagnostykę = system świadomie zmniejsza ilość leczonych pacjentów"
+        },
+        urls: {
+          prawica: "https://www.rynekzdrowia.pl/Finanse-i-zarzadzanie/Rzad-planuje-ponowne-wprowadzenie-limitow-Nie-chcemy-umierac-w-kolejkach,278575,1.html",
+          lewica: "https://www.zwrotnikraka.pl/kolejki-na-rezonans-magnetyczny-z-opisem/",
+          libki: "https://onkopedia.pl/news/nowe-limity-nfz-wydluzaja-kolejki-szpitale-wstrzymuja-zapisy-na-tomografie-i-rezonans/",
+          luka: "https://politykazdrowotna.com/artykul/diagnostyka-obrazowa-kolejki-krotsze-ale-nie-dla-wszystkich-n829323"
+        }
+      },
+      {
+        id: "disc-7",
+        title: "Kraków: Miszalski buduje 'medialne imperium' przed referendum",
+        summary: "Referendum ws. odwołania prezydenta Krakowa: 24 maja. 134 tys. podpisów (potrzebne 58 tys.). Miszalski zmienił strategię: rozbudowuje media samorządowe, uruchomił tajemniczą stronę internetową. Budżet na 'komunikację' rośnie.",
+        hook: "Prezydent, którego chcą odwołać, zamiast się bronić argumentami — buduje własne media za publiczne pieniądze. W mieście, które właśnie zebrało 134 tysiące podpisów przeciwko niemu.",
+        narratives: {
+          prawica: "Miszalski to typ polityka z KO — władza za wszelką cenę, media za publiczne pieniądze",
+          lewica: "Referendum to test prawicy — PiS próbuje destabilizować rządy KO w miastach",
+          libki: "Problem to brak mechanizmów rozliczalności — referendum kosztuje miliony, a i tak może być nieważne",
+          luka: "Nikt nie mówi, że koszt referendum to 16 mln zł — a Miszalski zamiast je uszanować, wydaje publiczne pieniądze na media, żeby ludzie nie przyszli głosować"
+        },
+        urls: {
+          prawica: "https://gazetakrakowska.pl/bedzie-referendum-w-krakowie-znamy-date-sadu-nad-prezydentem-aleksandrem-miszalskim-i-rada-miasta/ar/c1p2-28887243",
+          lewica: "https://oko.press/referendum-bitwa-o-krakow-czyli-dlaczego-tusk-juz-siega-po-plan-b",
+          libki: "https://krakowwpigulce.pl/2026/04/07/czy-prezydent-miszalski-i-radni-straca-stanowiska-oficjalna-data-i-zasady-referendum-w-krakowie/",
+          luka: "https://wydarzenia.interia.pl/malopolskie/news-wladze-krakowa-buduja-medialne-imperium-w-tle-tajemnicza-str,nId,23328195"
+        }
+      }
+    ],
+    bonusy: [
+      {
+        id: "bonus-1",
+        title: "Memy po klęsce Orbána — internet świętuje upadek 'niepokonanego'",
+        summary: "Twitter/X i Wykop eksplodowały memami po przegranej Orbána. Polskie memy: 'Kaczyński dzwoni do Orbána: halo? — numer niedostępny'. TISZA wygrała na TikToku — Fidesz kontrolował TV, ale nie internet."
+      },
+      {
+        id: "bonus-2",
+        title: "'PiS będzie miał dwa płuca' — internet komentuje spotkanie Kaczyński-Morawiecki",
+        summary: "Po 7-godzinnym spotkaniu Bielan wrzucił zdjęcie 'kto się lubi, ten się czubi'. Internet: 'dwa płuca to organizm, który zaraz dostanie zapalenia'. Memy o rozwodzie, terapii par, i 'turbulencjach'."
+      },
+      {
+        id: "bonus-3",
+        title: "'Szpitalne łóżko poczeka, choroba nie' — TikTok medyków",
+        summary: "Lekarze i pielęgniarki na TikToku i Instagramie: czarne opaski, filmiki z pustymi oddziałami, ścinki z NFZ-em. Hashtag #CzarnyTydzień viraluje. Pacjenci odpowiadają własnymi historiami o kolejkach."
+      }
+    ]
+  },
+  {
+    id: "week-2026-04-03-09",
+    label: "3-9 kwietnia 2026",
+    date: "Tydzie\u0144 3-9 kwietnia 2026",
+    popularne_trendy: [
+      {
+        id: "pt-1",
+        title: "Tusk vs Nawrocki \u2014 kohabitacja piekielna",
+        summary: "Prezydent Nawrocki zawetowa\u0142 po\u017cyczk\u0119 obronn\u0105 UE 43,7 mld euro. Tusk m\u00f3wi o sabota\u017cu bezpiecze\u0144stwa. A Polska w tym czasie nie potrafi uchwali\u0107 bud\u017cetu obronnego.",
+        hook: "Polska ma prezydenta z opozycji i premiera z koalicji. Efekt? System rozpadaj\u0105cy si\u0119 na oczach. Konflikt Nawrocki-Tusk to nie polityka \u2014 to parali\u017c decyzyjny.",
+        narratives: {
+          prawica: "Nawrocki s\u0142usznie broni suwerenno\u015bci Polski przed kolejnym zad\u0142u\u017ceniem Brukseli",
+          lewica: "Nawrocki sabotuje bezpiecze\u0144stwo Polski dla gier politycznych PiS-u",
+          libki: "Problem to parali\u017c decyzyjny \u2014 Polska nie ma procedury rozwi\u0105zywania konflikt\u00f3w prezydent-premier",
+          luka: "Nikt nie m\u00f3wi, \u017ce polska kohabitacja nie ma \u017cadnych mechanizm\u00f3w mediacji. 63% Polak\u00f3w ocenia relacj\u0119 Nawrocki-Tusk jako z\u0142\u0105."
+        },
+        urls: {
+          prawica: "https://wiadomosci.wp.pl/kulisy-weta-prezydenta-tak-nawrocki-dojrzewal-do-decyzji-o-safe-7263912232327488a",
+          lewica: "https://oko.press/weto-do-safe-nawrocki",
+          libki: "https://klubjagiellonski.pl/2026/01/22/kohabitacja-tuska-i-nawrockiego-obraz-medialny-jest-gorszy-niz-rzeczywistosc/",
+          luka: "https://www.rp.pl/komentarze/art43963921-michal-szuldrzynski-dlaczego-weto-do-safe-uderzylo-w-bezpieczenstwo-i-pozycje-polski-trzy-powody"
+        }
+      },
+      {
+        id: "pt-2",
+        title: "RPP ko\u0144czy obni\u017cki st\u00f3p \u2014 koniec marze\u0144 o ta\u0144szych kredytach",
+        summary: "Rada Polityki Pieni\u0119\u017cnej utrzymuje stopy na 3,75%. Ostatnia obni\u017cka. Dla m\u0142odych Polak\u00f3w kredyty hipoteczne pozostaj\u0105 niedost\u0119pne.",
+        hook: "\u015arednia cena mieszkania w Warszawie: 18 662 z\u0142/m\u00b2. Rata kredytu poch\u0142ania 50%+ pensji 30-latka. Pokolenie 25-35 zosta\u0142o systemowo wykluczone z rynku nieruchomo\u015bci.",
+        narratives: {
+          prawica: "Wysokie stopy to efekt polityki wydatkowej rz\u0105du Tuska \u2014 rozrzuca publiczne pieni\u0105dze",
+          lewica: "Wysokie stopy uderzaj\u0105 w najubo\u017cszych \u2014 rz\u0105d powinien szuka\u0107 innych narz\u0119dzi wsparcia",
+          libki: "Marcowa obni\u017cka by\u0142a ostatni\u0105 \u2014 rynek musi si\u0119 dostosowa\u0107",
+          luka: "Nikt nie \u0142\u0105czy dw\u00f3ch fakt\u00f3w: stopy 3,75% + ceny mieszka\u0144 rosn\u0105 5% r/r = pokolenie 30-latk\u00f3w ma niemo\u017cliwy wyb\u00f3r."
+        },
+        urls: {
+          prawica: "https://www.rp.pl/biznes/art43922831-spadek-urodzen-w-polsce-co-naprawde-niszczy-demografie",
+          lewica: "https://www.money.pl/gospodarka/oskar-sobolewski/dzietnosc-szoruje-po-dnie-to-wplynie-na-rynek-pracy-7167893307828896a.html",
+          libki: "https://obserwatorgospodarczy.pl/2025/05/06/wspolczynnik-dzietnosci-w-polsce-na-katastrofalnie-niskim-poziomie/",
+          luka: "https://echoswiat.pl/demografia-polski-2026-dane-gus/"
+        }
+      }
+    ],
+    discovery: [
+      {
+        id: "disc-1",
+        title: "90% kasy z KPO posz\u0142o na p\u0142ynno\u015b\u0107 \u2014 a mia\u0142o i\u015b\u0107 na inwestycje",
+        summary: "Prezes NIK Mariusz Ha\u0142adyj ujawni\u0142: oko\u0142o 90% z 58,1 mld euro z KPO trafi\u0142o na zarz\u0105dzanie p\u0142ynno\u015bci\u0105 bud\u017cetu, nie na realne inwestycje.",
+        hook: "Wielki plan na papierze, pustka w realu. Rz\u0105d nie wie dok\u0142adnie, ile pieni\u0119dzy z KPO faktycznie wydano na inwestycje.",
+        narratives: {
+          prawica: "Kompromitacja rz\u0105du Tuska \u2014 obiecywali miliardy na inwestycje, a KPO pos\u0142u\u017cy\u0142o do \u0142atania dziury bud\u017cetowej",
+          lewica: "Problem jest strukturalny \u2014 op\u00f3\u017anienia wdro\u017ceniowe to dziedzictwo blokady za rz\u0105d\u00f3w PiS",
+          libki: "\u015arodki z KPO powinny nap\u0119dza\u0107 gospodark\u0119, a zamiast tego s\u0142u\u017c\u0105 obs\u0142udze d\u0142ugu \u2014 marnotrawstwo",
+          luka: "Nikt nie pyta: ile z tych 58 mld euro FAKTYCZNIE zmieni\u0142o \u017cycie przeci\u0119tnego Polaka?"
+        },
+        urls: {
+          prawica: "https://dorzeczy.pl/opinie/851390/konfederacja-sklada-projekt-ustawy-ksef-dobrowolny.html",
+          lewica: "https://oko.press/po-mnie-chocby-potop-w-co-gra-prezydent",
+          libki: "https://tep.org.pl/liczba-polakow-maleje-i-nie-ma-szans-na-odwrocenie-tej-tendencji-tog-6-2026/",
+          luka: "https://www.rp.pl/spoleczenstwo/art43704751-mimo-fatalnej-demografii-rzad-nawet-nie-sprawdza-czy-nowe-ustawy-maja-na-nia-wplyw"
+        }
+      },
+      {
+        id: "disc-2",
+        title: "5000 z\u0142 kary za skarpetk\u0119 w z\u0142ym koszu \u2014 absurd segregacji tekstyli\u00f3w",
+        summary: "Od 2025: za wrzucenie skarpetki do zwyk\u0142ego kosza grozi mandat do 500 z\u0142 (s\u0105d: do 5000 z\u0142). Problem: gminy nie maj\u0105 obowi\u0105zku odbierania tekstyli\u00f3w.",
+        hook: "Pa\u0144stwo ka\u017ce ci segregowa\u0107 tekstylia, ale nie zapewnia infrastruktury do ich oddania. W Bia\u0142ymstoku w 2025 wydano 421 decyzji o karach.",
+        narratives: {
+          prawica: "UE narzuca absurdalne przepisy, a polski rz\u0105d bezkrytycznie je wdra\u017ca bez przygotowania",
+          lewica: "Segregacja jest wa\u017cna, ale rz\u0105d musi zapewni\u0107 realne warunki \u2014 nie mo\u017cna kara\u0107 ludzi za brak systemu",
+          libki: "Problem polega na braku infrastruktury odpadowej, a nie na samej idei segregacji",
+          luka: "Polska produkuje ~500 tys. ton odpad\u00f3w tekstylnych rocznie \u2014 a recyklinguje mniej ni\u017c 10%."
+        },
+        urls: {
+          prawica: "https://nczas.info/2026/03/14/inwigilacja-pod-plaszczykiem-cyfryzacji-rusza-spoleczny-opor-przeciwko-ksef-zalegalizowane-szpiegowanie-video/",
+          lewica: "https://www.portalsamorzadowy.pl/komunikacja-spoleczna/likwidacja-prasy-wydawanej-przez-samorzady-ministerstwo-pracuje-nad-przepisami,600911.html",
+          libki: "https://itwiz.pl/sankcje-obowiazujace-e-sklepy-w-2026-roku-jak-uniknac-wysokich-kar-i-cyfrowej-izolacji/",
+          luka: "https://www.rp.pl/prawo-w-polsce/art43481531-zamieszanie-z-nowa-ustawa-medialna-wydawcy-nagle-wykreslenie-przepisow"
+        }
+      },
+      {
+        id: "disc-3",
+        title: "Po\u0142owa opinii w sklepach to \u015bciema \u2014 UOKiK wyci\u0105ga bat na fake reviews",
+        summary: "Od marca 2026 UOKiK egzekwuje \u2018czarn\u0105 list\u0119\u2019 praktyk rynkowych. Kary: do 10% rocznego obrotu firmy, do 2 mln z\u0142 na prezesa.",
+        hook: "Algorytmy AI zaczynaj\u0105 blokowa\u0107 nieuczciwe sklepy. Ale pytanie brzmi: skoro UOKiK o tym wie od lat, to dlaczego dopiero teraz?",
+        narratives: {
+          prawica: "Regulacja to dobry kierunek, ale UOKiK nie powinien zast\u0119powa\u0107 rynku \u2014 niech konsument decyduje",
+          lewica: "Ochrona konsumenta to priorytet \u2014 wreszcie pa\u0144stwo bierze stron\u0119 kupuj\u0105cego",
+          libki: "Kary s\u0105 potrzebne, ale egzekucja kuleje \u2014 pa\u0144stwo nak\u0142ada miliardowe kary, kt\u00f3rych nie potrafi \u015bci\u0105gn\u0105\u0107",
+          luka: "Nikt nie pyta o Amazon, Allegro, Temu \u2014 wielcy gracze maj\u0105 setki tysi\u0119cy opinii i AI. Ma\u0142e sklepy dostan\u0105 kary."
+        },
+        urls: {
+          prawica: "https://www.dlahandlu.pl/e-commerce/weszlo-nowe-prawo-uokik-konczy-poblazanie-e-sklepom,168631.html",
+          lewica: "https://www.infor.pl/prawo/prawa-konsumenta/konsument-w-sieci/7554183,kary-uokik-za-falszywe-opinie-2026-do-10-obrotu-dla-sklepu-i-2-mln-zl-dla-prezesa-a-konsument-zwraca-towar-po-12-miesiacach-czarna-lista-ai-sztuczna-inteligencja-ecommerce-sklepy-internetowe-zakupy-reklama-falszywe-opinie-kupione-gwiazdki.html",
+          libki: "https://itwiz.pl/sankcje-obowiazujace-e-sklepy-w-2026-roku-jak-uniknac-wysokich-kar-i-cyfrowej-izolacji/",
+          luka: "https://spidersweb.pl/2026/04/uokik-nieuczciwe-opinie-kary.html"
+        }
+      },
+      {
+        id: "disc-4",
+        title: "Wsp\u00f3\u0142czynnik dzietno\u015bci 1,10 \u2014 Polska wymiera szybciej ni\u017c prognozy",
+        summary: "W 2025 urodzi\u0142o si\u0119 238 tys. dzieci \u2014 o 40% mniej ni\u017c w 2017. Wsp\u00f3\u0142czynnik dzietno\u015bci: 1,10 (trzeba 2,1 dla stabilno\u015bci).",
+        hook: "Polska wymiera \u2014 dos\u0142ownie \u2014 a \u017caden polityk nie ma planu. To najwi\u0119ksza tykaj\u0105ca bomba pod polsk\u0105 gospodark\u0119, emerytury i system zdrowia.",
+        narratives: {
+          prawica: "Kryzys demograficzny to efekt liberalizacji obyczajowej i braku wsparcia tradycyjnej rodziny",
+          lewica: "Kobiety nie rodz\u0105, bo nie maj\u0105 warunk\u00f3w \u2014 brak \u017c\u0142obk\u00f3w, niestabilne zatrudnienie, luka p\u0142acowa",
+          libki: "Problem jest ekonomiczny \u2014 mieszkania za drogie, praca niepewna, wsparcie nieefektywne",
+          luka: "Polska wydaje ~4% PKB na polityk\u0119 prorodinn\u0105 (sporo!), ale pieni\u0105dze nie trafiaj\u0105 w potrzeby \u2014 bo nikt nie zbada\u0142, czego FAKTYCZNIE potrzebuj\u0105 m\u0142odzi."
+        },
+        urls: {
+          prawica: "https://obserwatorgospodarczy.pl/2025/05/06/wspolczynnik-dzietnosci-w-polsce-na-katastrofalnie-niskim-poziomie/",
+          lewica: "https://glosseniora.pl/2025/08/08/jak-zwiekszyc-dzietnosc-w-polsce-praktyczne-rozwiazania-na-trudnosci/",
+          libki: "https://klubjagiellonski.pl/2025/09/14/demografii-nie-uratuja-tanie-mieszkania-zlobki-i-800-rozwiazanie-lezy-gdzie-indziej/",
+          luka: "https://www.rp.pl/spoleczenstwo/art43704751-mimo-fatalnej-demografii-rzad-nawet-nie-sprawdza-czy-nowe-ustawy-maja-na-nia-wplyw"
+        }
+      },
+      {
+        id: "disc-5",
+        title: "Gazety samorz\u0105dowe zabijaj\u0105 lokaln\u0105 pras\u0119 \u2014 UMK chcia\u0142a zakazu i si\u0119 wycofa\u0142a",
+        summary: "Samorz\u0105dy wydaj\u0105 setki gazet finansowanych z publicznych pieni\u0119dzy \u2014 oficjalnie informacyjne, faktycznie propagandowe. 66% lokalnych dziennikarzy spotyka si\u0119 z naciskami.",
+        hook: "Historia o wolno\u015bci prasy na poziomie lokalnym \u2014 tam gdzie nikt nie patrzy. Samorz\u0105dy wydaj\u0105 gazety za publiczne pieni\u0105dze, w kt\u00f3rych nigdy nie pojawi si\u0119 krytyka w\u0142adzy.",
+        narratives: {
+          prawica: "Zakaz medi\u00f3w samorz\u0105dowych to atak na prawo lokalnych spo\u0142eczno\u015bci do informacji",
+          lewica: "Media samorz\u0105dowe to propaganda \u2014 trzeba wspiera\u0107 niezale\u017cne media lokalne",
+          libki: "Rynek powinien decydowa\u0107 \u2014 je\u015bli ludzie chc\u0105 niezale\u017cnej prasy, zap\u0142ac\u0105 za ni\u0105",
+          luka: "W wi\u0119kszo\u015bci ma\u0142ych gmin gazeta samorz\u0105dowa to JEDYNE medium. Kto kontroluje informacj\u0119 na poziomie lokalnym?"
+        },
+        urls: {
+          prawica: "https://www.portalsamorzadowy.pl/zmiany-w-prawie/samorzady-dalej-beda-mogly-wydawac-swoja-prase-to-sie-nie-podoba,641228.html",
+          lewica: "https://e-sochaczew.pl/artykul/walka-o-lokalna-prase-n2208560",
+          libki: "https://www.wirtualnemedia.pl/samorzady-bez-zakazu-wydawania-prasy-ofiarami-w-duzych-miastach-sa-wyborcza-i-polska-press,7230901266787264a",
+          luka: "https://klubjagiellonski.pl/2026/02/02/aleksander-miszalski-w-ogniu-krytyki-czy-media-samorzadowe-moga-mu-pomoc/"
+        }
+      },
+      {
+        id: "disc-6",
+        title: "KSeF od 1 kwietnia \u2014 miliony firm wchodz\u0105 w system, kt\u00f3ry nie dzia\u0142a",
+        summary: "Od 1 kwietnia KSeF obj\u0105\u0142 obowi\u0105zkiem miliony mikro, ma\u0142ych i \u015brednich firm. Pierwsza faza: 45% manager\u00f3w ocenia negatywnie, systemy pada\u0142y.",
+        hook: "KSeF to historia o tym, jak pa\u0144stwo wymy\u015bli\u0142o system kontroli \u2014 ale nie potrafi\u0142o go uruchomi\u0107 bez chaosu. \u2018Mia\u0142 by\u0107 prze\u0142om, jest frustracja.\u2019",
+        narratives: {
+          prawica: "KSeF to narz\u0119dzie kontroli \u2014 rz\u0105d chce \u015bledzi\u0107 ka\u017cd\u0105 transakcj\u0119 kosztem wolno\u015bci przedsi\u0119biorc\u00f3w",
+          lewica: "Cyfryzacja jest potrzebna, ale wdro\u017cenie jest fatalnie przygotowane \u2014 cierpi\u0105 pracownicy i ma\u0142e firmy",
+          libki: "Idea jest dobra, ale wykonanie katastrofalne \u2014 typowe polskie IT w urz\u0119dach",
+          luka: "Nikt nie pyta, ile KSeF kosztuje przedsi\u0119biorc\u00f3w. Ka\u017cda firma musia\u0142a kupi\u0107/dostosowa\u0107 oprogramowanie. Te koszty to miliardy."
+        },
+        urls: {
+          prawica: "https://nczas.info/2026/01/27/narzedzie-totalnej-inwigilacji-wszystko-w-rekach-panstwa-rpo-zada-wyjasnien/",
+          lewica: "https://www.telepolis.pl/artykuly/1-i-7-kwietnia-paraliz-cyfryzacja-ksef-faktury",
+          libki: "https://www.infakt.pl/blog/wdrozenie-ksef-harmonogram-2026-r/",
+          luka: "https://www.gazetaprawna.pl/wiadomosci/kraj/artykuly/10631852,ksef-kontrowersje-rpo-konstytucyjnosc-faktur.html"
+        }
+      },
+      {
+        id: "disc-7",
+        title: "Krak\u00f3w referendum \u2014 pierwsze du\u017ce miasto chce odwo\u0142a\u0107 prezydenta",
+        summary: "24 maja 2026 Krak\u00f3w g\u0142osuje nad odwo\u0142aniem prezydenta Miszalskiego i Rady Miasta. Pierwszy recall w mie\u015bcie wojew\u00f3dzkim w Polsce.",
+        hook: "Precedens: czy demokracja lokalna w Polsce zacznie dzia\u0142a\u0107 jak recall elections w USA? Ale pr\u00f3g frekwencji jest ustawiony tak wysoko, \u017ce referendum prawie nigdy nie jest wi\u0105\u017c\u0105ce.",
+        narratives: {
+          prawica: "Pora\u017cka koalicji rz\u0105dz\u0105cej na poziomie lokalnym \u2014 Krak\u00f3w m\u00f3wi \u2018do\u015b\u0107\u2019",
+          lewica: "Referendum to narz\u0119dzie demokratyczne \u2014 je\u015bli ludzie chc\u0105 zmiany, maj\u0105 do tego prawo",
+          libki: "Referendum odwo\u0142awcze powinno by\u0107 normalnym mechanizmem w polskiej demokracji",
+          luka: "Progi frekwencyjne w polskich referendach s\u0105 ustawione tak, \u017ce prawie NIGDY nie s\u0105 wi\u0105\u017c\u0105ce. Fikcja demokracji bezpo\u015bredniej."
+        },
+        urls: {
+          prawica: "https://dorzeczy.pl/opinie/870268/referendum-w-krakowie-miszalski-namawia-do-bojkotu-i-liczy-na-niska-frekwencje.html",
+          lewica: "https://oko.press/referendum-bitwa-o-krakow-czyli-dlaczego-tusk-juz-siega-po-plan-b",
+          libki: "https://krknews.pl/referendum-w-krakowie-wszystko-co-musisz-o-nim-wiedziec-fakty-liczby-terminy/",
+          luka: "https://portalkomunalny.pl/referendum-w-krakowie-w-sprawie-odwolania-prezydenta-i-rady-598927/"
+        }
+      }
+    ],
+    bonusy: [
+      {
+        id: "bonus-1",
+        title: "Polska nie jedzie na Mundial 2026 \u2014 memy eksploduj\u0105",
+        summary: "Polska przegra\u0142a bara\u017c ze Szwecj\u0105 2:3. Internet: #MundialBezPolski. Tematy: \u2018Polska szwedzki\u2019, por\u00f3wnania do \u2018wiecznego pechowca\u2019."
+      },
+      {
+        id: "bonus-2",
+        title: "KSeF od 1 kwietnia \u2014 \u2018to nie Prima Aprilis\u2019",
+        summary: "W dniu wej\u015bcia KSeF (1 kwietnia), polscy przedsi\u0119biorcy na X i Wykopie wrzucali memy o \u2018najlepszym primaaprilisowym \u017carcie rz\u0105du\u2019. Hashtag #KSeF trendowa\u0142."
+      },
+      {
+        id: "bonus-3",
+        title: "Memy o te\u015bciowych podbijaj\u0105 internet \u2014 nowa fala humoru",
+        summary: "Nie stare \u017carty \u2014 nowa fala: \u2018babcia m\u00f3wi \u017ce za jej czas\u00f3w nie by\u0142o depresji, bo nikt nie mia\u0142 czasu na smutki\u2019. Setki tysi\u0119cy udost\u0119pnie\u0144."
+      }
+    ]
+  }
+];
+
+// ═══ STATE ═══
+let currentBriefIdx = 0;
+const decisions = {};
+
+function loadBrief(idx) {
+  currentBriefIdx = idx;
+  Object.keys(decisions).forEach(k => delete decisions[k]);
+  renderSidebar();
+  render();
+}
+
+function renderSidebar() {
+  const list = document.getElementById('sidebarList');
+  let html = '';
+  dashboardHistory.forEach((brief, i) => {
+    const topicCount = brief.popularne_trendy.length + brief.discovery.length + brief.bonusy.length;
+    html += `<a class="sidebar-item ${i === currentBriefIdx ? 'active' : ''}" onclick="loadBrief(${i})">
+      <div class="item-date">${brief.label}</div>
+      <div class="item-count">${topicCount} temat\u00f3w</div>
+    </a>`;
+  });
+  list.innerHTML = html;
+}
+
+function render() {
+  const brief = dashboardHistory[currentBriefIdx];
+  document.getElementById('briefDate').textContent = brief.date;
+
+  const app = document.getElementById('app');
+  let html = '';
+
+  html += '<div class="section-label">POPULARNE TRENDY \u2014 co wszyscy wiedz\u0105, ale nikt nie widzi k\u0105ta</div>';
+  brief.popularne_trendy.forEach(t => { html += renderCard(t, 'popularne'); });
+
+  html += '<div class="section-label">DISCOVERY \u2014 tematy pod radarem</div>';
+  brief.discovery.forEach(t => { html += renderCard(t, 'discovery'); });
+
+  html += '<div class="section-label">BONUSY \u2014 memy i virale</div>';
+  brief.bonusy.forEach(t => { html += renderCard(t, 'bonus', true); });
+
+  html += `
+  <div class="general-notes">
+    <h3>Og\u00f3lne uwagi, dodatkowe tematy, linki</h3>
+    <textarea id="generalNotes" placeholder="Wklej linki, dokumenty, dodatkowe pomys\u0142y, uwagi..."></textarea>
+    <div class="hint">To pole trafia do agenta jako kontekst do Phase 2.</div>
+  </div>`;
+
+  html += `
+  <div class="submit-section">
+    <button class="submit-btn" onclick="submitDecisions()">Wy\u015blij do agenta</button>
+  </div>`;
+
+  app.innerHTML = html;
+  restoreState();
+  updateStatus();
+}
+
+function renderCard(topic, type, isBonus) {
+  const d = decisions[topic.id] || {};
+  const stateClass = d.decision === 'opener' ? 'selected-opener' : d.decision === 'yes' ? 'selected-yes' : d.decision === 'no' ? 'selected-no' : '';
+
+  let html = `<div class="topic-card ${stateClass}" id="card-${topic.id}">`;
+  html += `<div class="topic-title">${topic.title}</div>`;
+  html += `<div class="topic-summary">${topic.summary}</div>`;
+  if (topic.hook) html += `<div class="topic-hook">${topic.hook}</div>`;
+
+  if (topic.narratives) {
+    const urls = topic.urls || {};
+    html += '<div class="narratives">';
+    html += `<div class="narrative prawica"><div class="label">Prawica ${urls.prawica ? '<a href="'+urls.prawica+'" target="_blank">\u2197 \u017ar\u00f3d\u0142o</a>' : ''}</div><div class="text">${topic.narratives.prawica}</div></div>`;
+    html += `<div class="narrative lewica"><div class="label">Lewica ${urls.lewica ? '<a href="'+urls.lewica+'" target="_blank">\u2197 \u017ar\u00f3d\u0142o</a>' : ''}</div><div class="text">${topic.narratives.lewica}</div></div>`;
+    html += `<div class="narrative libki"><div class="label">Libki ${urls.libki ? '<a href="'+urls.libki+'" target="_blank">\u2197 \u017ar\u00f3d\u0142o</a>' : ''}</div><div class="text">${topic.narratives.libki}</div></div>`;
+    html += `<div class="narrative luka"><div class="label">Luka narracyjna ${urls.luka ? '<a href="'+urls.luka+'" target="_blank">\u2197 \u017ar\u00f3d\u0142o</a>' : ''}</div><div class="text">${topic.narratives.luka}</div></div>`;
+    html += '</div>';
+  }
+
+  html += '<div class="decision-row">';
+  if (!isBonus) {
+    html += `<button class="decision-btn ${d.decision==='opener'?'active-opener':''}" onclick="setDecision('${topic.id}','opener')">OPENER</button>`;
+  }
+  html += `<button class="decision-btn ${d.decision==='yes'?'active-yes':''}" onclick="setDecision('${topic.id}','yes')">Bierzemy</button>`;
+  html += `<button class="decision-btn ${d.decision==='no'?'active-no':''}" onclick="setDecision('${topic.id}','no')">Nie</button>`;
+  html += '</div>';
+
+  html += `
+  <div class="notes-area">
+    <textarea id="notes-${topic.id}" placeholder="Uwagi, angle, pomys\u0142..." oninput="saveNote('${topic.id}', this.value)">${d.notes || ''}</textarea>
+  </div>`;
+
+  html += '</div>';
+  return html;
+}
+
+function setDecision(id, decision) {
+  if (!decisions[id]) decisions[id] = {};
+  decisions[id].decision = decisions[id].decision === decision ? null : decision;
+  render();
+}
+
+function saveNote(id, value) {
+  if (!decisions[id]) decisions[id] = {};
+  decisions[id].notes = value;
+}
+
+function restoreState() {
+  Object.keys(decisions).forEach(tid => {
+    const el = document.getElementById('notes-' + tid);
+    if (el && decisions[tid].notes) el.value = decisions[tid].notes;
+  });
+  const gen = document.getElementById('generalNotes');
+  if (gen && window._generalNotes) gen.value = window._generalNotes;
+}
+
+function updateStatus() {
+  const selected = Object.values(decisions).filter(d => d.decision === 'yes' || d.decision === 'opener').length;
+  const opener = Object.values(decisions).filter(d => d.decision === 'opener').length;
+  document.getElementById('statusCount').textContent = `${selected} temat\u00f3w wybranych` + (opener ? ` (${opener} opener)` : '');
+}
+
+function submitDecisions() {
+  const brief = dashboardHistory[currentBriefIdx];
+  window._generalNotes = document.getElementById('generalNotes')?.value || '';
+
+  const output = {
+    date: brief.date,
+    submitted_at: new Date().toISOString(),
+    topics: [],
+    general_notes: window._generalNotes,
+    opener: null,
+    selected: [],
+    rejected: []
+  };
+
+  const allTopics = [...brief.popularne_trendy, ...brief.discovery, ...brief.bonusy];
+  allTopics.forEach(t => {
+    const d = decisions[t.id] || {};
+    output.topics.push({ id: t.id, title: t.title, decision: d.decision || 'undecided', notes: d.notes || '' });
+    if (d.decision === 'opener') { output.opener = t.id; output.selected.push(t.id); }
+    else if (d.decision === 'yes') { output.selected.push(t.id); }
+    else if (d.decision === 'no') { output.rejected.push(t.id); }
+  });
+
+  const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'daylik_decisions.json';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  const banner = document.getElementById('successBanner');
+  banner.style.display = 'block';
+  setTimeout(() => { banner.style.display = 'none'; }, 4000);
+}
+
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'generalNotes') window._generalNotes = e.target.value;
+});
+
+renderSidebar();
+render();
+</script>
+</body>
+</html>

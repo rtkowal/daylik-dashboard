@@ -1,0 +1,94 @@
+[
+  {
+    "topic": "KSeF od 1 kwietnia — miliony firm wchodzą w system, który nie działa",
+    "results": [
+      {
+        "fact": "Od 1 kwietnia 2026 KSeF obowiązkowy dla WSZYSTKICH podatników VAT (mikro, małe, średnie firmy)",
+        "verdict": "DISPUTED",
+        "confidence": 0.9,
+        "reasoning": "Obowiązek KSeF dla wszystkich podatników VAT czynnych ma wejść w życie 1 kwietnia 2026, ale nie dotyczy to podatników zwolnionych z VAT, więc stwierdzenie 'WSZYSTKICH' jest nieprecyzyjne.",
+        "source": "https://www.gov.pl/web/finanse/krajowy-system-e-faktur-ksef",
+        "correction": "Od 1 kwietnia 2026 KSeF obowiązkowy dla wszystkich czynnych podatników VAT (mikro, małe, średnie firmy).",
+        "flag": "⚠️ WYMAGA KOREKTY"
+      },
+      {
+        "fact": "45% managerów dużych firm (faza 1) oceniło system negatywnie — systemy logowania padały",
+        "verdict": "UNVERIFIED",
+        "confidence": 0.3,
+        "reasoning": "Brak dostępnych danych lub badań potwierdzających dokładnie 45% negatywnych opinii managerów dużych firm na temat KSeF oraz problemów z logowaniem.",
+        "source": null,
+        "correction": null,
+        "flag": "❓ NIEZWERYFIKOWANY"
+      },
+      {
+        "fact": "RPO uznał KSeF za 'narzędzie totalnej inwigilacji' przedsiębiorców",
+        "verdict": "DISPUTED",
+        "confidence": 0.8,
+        "reasoning": "Rzecznik Praw Obywatelskich wyraził obawy dotyczące prywatności i potencjalnego naruszenia praw przedsiębiorców przez KSeF, ale nie użył dokładnie określenia 'narzędzie totalnej inwigilacji'.",
+        "source": "https://bip.brpo.gov.pl/pliki/1696842835.pdf",
+        "correction": "RPO wyraził obawy, że KSeF może naruszać prywatność przedsiębiorców i stanowić zagrożenie dla ich praw.",
+        "flag": "⚠️ WYMAGA KOREKTY"
+      },
+      {
+        "fact": "MF: 'okres łaski' — bez kar do końca 2026",
+        "verdict": "CONFIRMED",
+        "confidence": 0.95,
+        "reasoning": "Ministerstwo Finansów potwierdziło, że do końca 2026 roku nie będą nakładane kary za błędy w korzystaniu z KSeF, co jest określane jako 'okres łaski'.",
+        "source": "https://www.gov.pl/web/finanse/krajowy-system-e-faktur-ksef",
+        "correction": null,
+        "flag": null
+      },
+      {
+        "fact": "Start 1 kwietnia = Prima Aprilis",
+        "verdict": "CONFIRMED",
+        "confidence": 1,
+        "reasoning": "Data 1 kwietnia jest powszechnie znana jako Prima Aprilis, dzień żartów, co jest faktem niezależnym od kontekstu KSeF.",
+        "source": null,
+        "correction": null,
+        "flag": null
+      }
+    ],
+    "summary": {
+      "confirmed": 2,
+      "disputed": 2,
+      "unverified": 1
+    }
+  },
+  {
+    "topic": "Polska dzietność — 1.13 najniższa w historii",
+    "results": [
+      {
+        "fact": "Współczynnik dzietności 1.13 — najniższy w historii Polski",
+        "verdict": "CONFIRMED",
+        "confidence": 0.9,
+        "reasoning": "Według danych GUS, współczynnik dzietności w Polsce w 2022 roku wyniósł 1,26, a w 2023 roku spadł do około 1,13, co jest najniższym wynikiem w historii kraju.",
+        "source": "https://stat.gov.pl/obszary-tematyczne/ludnosc/ludnosc/sytuacja-demograficzna-polski,1,1.html",
+        "correction": null,
+        "flag": null
+      },
+      {
+        "fact": "W 2024 urodziło się 250 tys. dzieci — mniej niż w czasie II wojny światowej",
+        "verdict": "UNVERIFIED",
+        "confidence": 0.3,
+        "reasoning": "Dane za cały 2024 rok nie są jeszcze dostępne, więc nie można potwierdzić liczby 250 tys. urodzeń; porównanie z II wojną światową wymaga dokładnych danych historycznych, które mogą być nieprecyzyjne.",
+        "source": null,
+        "correction": null,
+        "flag": "❓ NIEZWERYFIKOWANY"
+      },
+      {
+        "fact": "Koszmarne Studio to kanał o demografii prowadzony przez emerytowanego profesora",
+        "verdict": "DISPUTED",
+        "confidence": 0.7,
+        "reasoning": "Koszmarne Studio to kanał na YouTube, ale nie ma potwierdzenia, że jest prowadzony przez emerytowanego profesora; brak wiarygodnych informacji o twórcy w publicznych źródłach.",
+        "source": null,
+        "correction": "Koszmarne Studio to kanał na YouTube zajmujący się tematyką demografii, ale brak informacji o statusie zawodowym prowadzącego.",
+        "flag": "⚠️ WYMAGA KOREKTY"
+      }
+    ],
+    "summary": {
+      "confirmed": 1,
+      "disputed": 1,
+      "unverified": 1
+    }
+  }
+]
