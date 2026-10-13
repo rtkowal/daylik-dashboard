@@ -1,0 +1,11 @@
+name = "daylik-api"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+ALLOWED_ORIGINS = "https://rtkowal.github.io,http://localhost:8000"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "daylik-decisions"
+database_id = "13367fa8-697b-4a0c-a1a1-c5e45d73b3e3"

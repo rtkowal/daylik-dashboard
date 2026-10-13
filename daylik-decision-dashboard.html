@@ -91,12 +91,18 @@
     .success-banner { left: 180px; }
     .narratives { grid-template-columns: 1fr; }
   }
+  .team-view { margin-top: 10px; font-size: 13px; color: #3c4043; }
+  .team-label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #80868b; margin-bottom: 4px; }
+  .team-row { padding: 3px 0; border-top: 1px dashed #e8eaed; }
+  .team-vote { font-size: 11px; padding: 1px 6px; border-radius: 8px; background: #f1f3f4; }
+  .team-vote.v-opener { background: #fce8b2; } .team-vote.v-yes { background: #ceead6; } .team-vote.v-no { background: #fad2cf; }
+  .sync { font-size: 12px; margin-top: 6px; }
 </style>
 </head>
 <body>
 
 <div class="success-banner" id="successBanner">
-  Decyzje zapisane. Agent je automatycznie odczyta.
+  Pobrano zbiorczy JSON z decyzjami całego zespołu.
 </div>
 
 <!-- ── Sidebar ── -->
@@ -111,6 +117,7 @@
   <div class="header">
     <h1>Daylik Show — Decision Dashboard</h1>
     <div class="date" id="briefDate"></div>
+    <div class="sync"><span id="whoami"></span> · <span id="syncStatus">Łączenie…</span></div>
     <div class="pipeline">Phase 1 Research &rarr; Twoja decyzja &rarr; Phase 2 Briefs + Beats</div>
   </div>
   <div class="container" id="app"></div>
@@ -689,14 +696,64 @@ const dashboardHistory = [
   }
 ];
 
+// ═══ CONFIG ═══
+// Po `npx wrangler deploy` wklej tu URL workera:
+const API = 'https://daylik-api.roberto-330.workers.dev';
+
 // ═══ STATE ═══
 let currentBriefIdx = 0;
-const decisions = {};
+let rows = [];            // wszystkie decyzje zespołu dla bieżącego briefu (z D1)
+let userName = (() => { try { return localStorage.getItem('daylik_user') || ''; } catch { return ''; } })();
+let pollTimer = null;
+const noteTimers = {};
 
-function loadBrief(idx) {
+const briefId = () => dashboardHistory[currentBriefIdx].id;
+const mine = (tid) => rows.find(r => r.topic_id === tid && r.user_name === userName) || {};
+const others = (tid) => rows.filter(r => r.topic_id === tid && r.user_name !== userName);
+const esc = (s) => String(s || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function ensureUser() {
+  while (!userName) {
+    userName = (prompt('Twoje imię (widoczne dla zespołu):') || '').trim().slice(0, 40);
+  }
+  try { localStorage.setItem('daylik_user', userName); } catch {}
+  document.getElementById('whoami').innerHTML = `Głosujesz jako <b>${esc(userName)}</b> · <a href="#" onclick="changeUser();return false">zmień</a>`;
+}
+function changeUser() { userName = ''; ensureUser(); render(); }
+
+async function fetchRows() {
+  try {
+    const r = await fetch(`${API}/decisions?brief=${encodeURIComponent(briefId())}`);
+    if (!r.ok) throw new Error(r.status);
+    rows = await r.json();
+    setSync('Zsynchronizowano ' + new Date().toLocaleTimeString('pl-PL'));
+  } catch (e) { setSync('⚠ Brak połączenia z bazą', true); }
+}
+
+async function push(tid, decision, notes) {
+  // optymistyczny update lokalny
+  const existing = rows.find(r => r.topic_id === tid && r.user_name === userName);
+  if (existing) { existing.decision = decision; existing.notes = notes; }
+  else rows.push({ topic_id: tid, user_name: userName, decision, notes });
+  try {
+    const r = await fetch(`${API}/decisions`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brief_id: briefId(), topic_id: tid, user_name: userName, decision, notes })
+    });
+    if (!r.ok) throw new Error(r.status);
+    setSync('Zapisano ' + new Date().toLocaleTimeString('pl-PL'));
+  } catch (e) { setSync('⚠ Nie zapisano — sprawdź połączenie', true); }
+}
+
+function setSync(msg, err) {
+  const el = document.getElementById('syncStatus');
+  if (el) { el.textContent = msg; el.style.color = err ? '#d93025' : '#5f6368'; }
+}
+
+async function loadBrief(idx) {
   currentBriefIdx = idx;
-  Object.keys(decisions).forEach(k => delete decisions[k]);
   renderSidebar();
+  await fetchRows();
   render();
 }
 
@@ -707,149 +764,125 @@ function renderSidebar() {
     const topicCount = brief.popularne_trendy.length + brief.discovery.length + brief.bonusy.length;
     html += `<a class="sidebar-item ${i === currentBriefIdx ? 'active' : ''}" onclick="loadBrief(${i})">
       <div class="item-date">${brief.label}</div>
-      <div class="item-count">${topicCount} temat\u00f3w</div>
+      <div class="item-count">${topicCount} tematów</div>
     </a>`;
   });
   list.innerHTML = html;
 }
 
 function render() {
+  // nie przerywaj komuś pisania notatki
+  const active = document.activeElement;
+  if (active && active.tagName === 'TEXTAREA') { updateTeamViews(); return; }
+
   const brief = dashboardHistory[currentBriefIdx];
   document.getElementById('briefDate').textContent = brief.date;
-
-  const app = document.getElementById('app');
   let html = '';
+  html += '<div class="section-label">POPULARNE TRENDY — co wszyscy wiedzą, ale nikt nie widzi kąta</div>';
+  brief.popularne_trendy.forEach(t => { html += renderCard(t); });
+  html += '<div class="section-label">DISCOVERY — tematy pod radarem</div>';
+  brief.discovery.forEach(t => { html += renderCard(t); });
+  html += '<div class="section-label">BONUSY — memy i virale</div>';
+  brief.bonusy.forEach(t => { html += renderCard(t, true); });
 
-  html += '<div class="section-label">POPULARNE TRENDY \u2014 co wszyscy wiedz\u0105, ale nikt nie widzi k\u0105ta</div>';
-  brief.popularne_trendy.forEach(t => { html += renderCard(t, 'popularne'); });
-
-  html += '<div class="section-label">DISCOVERY \u2014 tematy pod radarem</div>';
-  brief.discovery.forEach(t => { html += renderCard(t, 'discovery'); });
-
-  html += '<div class="section-label">BONUSY \u2014 memy i virale</div>';
-  brief.bonusy.forEach(t => { html += renderCard(t, 'bonus', true); });
-
+  const g = mine('_general');
   html += `
   <div class="general-notes">
-    <h3>Og\u00f3lne uwagi, dodatkowe tematy, linki</h3>
-    <textarea id="generalNotes" placeholder="Wklej linki, dokumenty, dodatkowe pomys\u0142y, uwagi..."></textarea>
-    <div class="hint">To pole trafia do agenta jako kontekst do Phase 2.</div>
-  </div>`;
-
-  html += `
+    <h3>Ogólne uwagi, dodatkowe tematy, linki</h3>
+    <textarea id="notes-_general" placeholder="Wklej linki, dodatkowe pomysły, uwagi..." oninput="saveNote('_general', this.value)">${esc(g.notes)}</textarea>
+    <div class="team-view" id="team-_general"></div>
+    <div class="hint">Zapisuje się automatycznie. Trafia do agenta jako kontekst do Phase 2.</div>
+  </div>
   <div class="submit-section">
-    <button class="submit-btn" onclick="submitDecisions()">Wy\u015blij do agenta</button>
+    <button class="submit-btn" onclick="exportForAgent()">Pobierz zbiorczy JSON dla agenta</button>
+    <div class="hint" style="margin-top:8px">Decyzje zapisują się na bieżąco we wspólnej bazie — ten przycisk jest tylko dla Phase 2.</div>
   </div>`;
-
-  app.innerHTML = html;
-  restoreState();
+  document.getElementById('app').innerHTML = html;
+  updateTeamViews();
   updateStatus();
 }
 
-function renderCard(topic, type, isBonus) {
-  const d = decisions[topic.id] || {};
+function renderCard(topic, isBonus) {
+  const d = mine(topic.id);
   const stateClass = d.decision === 'opener' ? 'selected-opener' : d.decision === 'yes' ? 'selected-yes' : d.decision === 'no' ? 'selected-no' : '';
-
   let html = `<div class="topic-card ${stateClass}" id="card-${topic.id}">`;
   html += `<div class="topic-title">${topic.title}</div>`;
   html += `<div class="topic-summary">${topic.summary}</div>`;
   if (topic.hook) html += `<div class="topic-hook">${topic.hook}</div>`;
-
   if (topic.narratives) {
     const urls = topic.urls || {};
+    const src = (k) => urls[k] ? `<a href="${urls[k]}" target="_blank">↗ źródło</a>` : '';
     html += '<div class="narratives">';
-    html += `<div class="narrative prawica"><div class="label">Prawica ${urls.prawica ? '<a href="'+urls.prawica+'" target="_blank">\u2197 \u017ar\u00f3d\u0142o</a>' : ''}</div><div class="text">${topic.narratives.prawica}</div></div>`;
-    html += `<div class="narrative lewica"><div class="label">Lewica ${urls.lewica ? '<a href="'+urls.lewica+'" target="_blank">\u2197 \u017ar\u00f3d\u0142o</a>' : ''}</div><div class="text">${topic.narratives.lewica}</div></div>`;
-    html += `<div class="narrative libki"><div class="label">Libki ${urls.libki ? '<a href="'+urls.libki+'" target="_blank">\u2197 \u017ar\u00f3d\u0142o</a>' : ''}</div><div class="text">${topic.narratives.libki}</div></div>`;
-    html += `<div class="narrative luka"><div class="label">Luka narracyjna ${urls.luka ? '<a href="'+urls.luka+'" target="_blank">\u2197 \u017ar\u00f3d\u0142o</a>' : ''}</div><div class="text">${topic.narratives.luka}</div></div>`;
+    html += `<div class="narrative prawica"><div class="label">Prawica ${src('prawica')}</div><div class="text">${topic.narratives.prawica}</div></div>`;
+    html += `<div class="narrative lewica"><div class="label">Lewica ${src('lewica')}</div><div class="text">${topic.narratives.lewica}</div></div>`;
+    html += `<div class="narrative libki"><div class="label">Libki ${src('libki')}</div><div class="text">${topic.narratives.libki}</div></div>`;
+    html += `<div class="narrative luka"><div class="label">Luka narracyjna ${src('luka')}</div><div class="text">${topic.narratives.luka}</div></div>`;
     html += '</div>';
   }
-
   html += '<div class="decision-row">';
-  if (!isBonus) {
-    html += `<button class="decision-btn ${d.decision==='opener'?'active-opener':''}" onclick="setDecision('${topic.id}','opener')">OPENER</button>`;
-  }
+  if (!isBonus) html += `<button class="decision-btn ${d.decision==='opener'?'active-opener':''}" onclick="setDecision('${topic.id}','opener')">OPENER</button>`;
   html += `<button class="decision-btn ${d.decision==='yes'?'active-yes':''}" onclick="setDecision('${topic.id}','yes')">Bierzemy</button>`;
   html += `<button class="decision-btn ${d.decision==='no'?'active-no':''}" onclick="setDecision('${topic.id}','no')">Nie</button>`;
   html += '</div>';
-
-  html += `
-  <div class="notes-area">
-    <textarea id="notes-${topic.id}" placeholder="Uwagi, angle, pomys\u0142..." oninput="saveNote('${topic.id}', this.value)">${d.notes || ''}</textarea>
-  </div>`;
-
+  html += `<div class="notes-area"><textarea id="notes-${topic.id}" placeholder="Twoje uwagi, angle, pomysł..." oninput="saveNote('${topic.id}', this.value)">${esc(d.notes)}</textarea></div>`;
+  html += `<div class="team-view" id="team-${topic.id}"></div>`;
   html += '</div>';
   return html;
 }
 
+const LABEL = { opener: 'OPENER', yes: 'Bierzemy', no: 'Nie' };
+function updateTeamViews() {
+  document.querySelectorAll('.team-view').forEach(el => {
+    const tid = el.id.replace('team-', '');
+    const o = others(tid).filter(r => r.decision || r.notes);
+    el.innerHTML = o.length ? '<div class="team-label">Zespół:</div>' + o.map(r =>
+      `<div class="team-row"><b>${esc(r.user_name)}</b>${r.decision ? ` <span class="team-vote v-${r.decision}">${LABEL[r.decision]}</span>` : ''}${r.notes ? ` — ${esc(r.notes)}` : ''}</div>`
+    ).join('') : '';
+  });
+}
+
 function setDecision(id, decision) {
-  if (!decisions[id]) decisions[id] = {};
-  decisions[id].decision = decisions[id].decision === decision ? null : decision;
+  const d = mine(id);
+  const next = d.decision === decision ? null : decision;
+  push(id, next, d.notes || '');
   render();
 }
 
 function saveNote(id, value) {
-  if (!decisions[id]) decisions[id] = {};
-  decisions[id].notes = value;
-}
-
-function restoreState() {
-  Object.keys(decisions).forEach(tid => {
-    const el = document.getElementById('notes-' + tid);
-    if (el && decisions[tid].notes) el.value = decisions[tid].notes;
-  });
-  const gen = document.getElementById('generalNotes');
-  if (gen && window._generalNotes) gen.value = window._generalNotes;
+  clearTimeout(noteTimers[id]);
+  noteTimers[id] = setTimeout(() => push(id, mine(id).decision || null, value), 700);
 }
 
 function updateStatus() {
-  const selected = Object.values(decisions).filter(d => d.decision === 'yes' || d.decision === 'opener').length;
-  const opener = Object.values(decisions).filter(d => d.decision === 'opener').length;
-  document.getElementById('statusCount').textContent = `${selected} temat\u00f3w wybranych` + (opener ? ` (${opener} opener)` : '');
+  const all = rows.filter(r => r.topic_id !== '_general');
+  const my = all.filter(r => r.user_name === userName);
+  const selected = my.filter(d => d.decision === 'yes' || d.decision === 'opener').length;
+  const people = new Set(all.filter(r => r.decision).map(r => r.user_name)).size;
+  document.getElementById('statusCount').textContent = `Twoje: ${selected} wybranych · głosowało osób: ${people}`;
 }
 
-function submitDecisions() {
-  const brief = dashboardHistory[currentBriefIdx];
-  window._generalNotes = document.getElementById('generalNotes')?.value || '';
-
-  const output = {
-    date: brief.date,
-    submitted_at: new Date().toISOString(),
-    topics: [],
-    general_notes: window._generalNotes,
-    opener: null,
-    selected: [],
-    rejected: []
-  };
-
-  const allTopics = [...brief.popularne_trendy, ...brief.discovery, ...brief.bonusy];
-  allTopics.forEach(t => {
-    const d = decisions[t.id] || {};
-    output.topics.push({ id: t.id, title: t.title, decision: d.decision || 'undecided', notes: d.notes || '' });
-    if (d.decision === 'opener') { output.opener = t.id; output.selected.push(t.id); }
-    else if (d.decision === 'yes') { output.selected.push(t.id); }
-    else if (d.decision === 'no') { output.rejected.push(t.id); }
-  });
-
-  const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'daylik_decisions.json';
-  a.click();
-  URL.revokeObjectURL(url);
-
-  const banner = document.getElementById('successBanner');
-  banner.style.display = 'block';
-  setTimeout(() => { banner.style.display = 'none'; }, 4000);
+async function exportForAgent() {
+  try {
+    const r = await fetch(`${API}/export?brief=${encodeURIComponent(briefId())}`);
+    const data = await r.json();
+    const brief = dashboardHistory[currentBriefIdx];
+    const titles = Object.fromEntries([...brief.popularne_trendy, ...brief.discovery, ...brief.bonusy].map(t => [t.id, t.title]));
+    data.date = brief.date;
+    data.topics.forEach(t => t.title = titles[t.id] || t.id);
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = `daylik_decisions_${briefId()}.json`; a.click();
+    const banner = document.getElementById('successBanner');
+    banner.style.display = 'block'; setTimeout(() => { banner.style.display = 'none'; }, 4000);
+  } catch (e) { setSync('⚠ Eksport nie powiódł się', true); }
 }
 
-document.addEventListener('input', (e) => {
-  if (e.target.id === 'generalNotes') window._generalNotes = e.target.value;
-});
-
-renderSidebar();
-render();
+// ═══ INIT ═══
+(async () => {
+  ensureUser();
+  await loadBrief(0);
+  pollTimer = setInterval(async () => { await fetchRows(); render(); }, 15000);
+})();
 </script>
 </body>
 </html>
